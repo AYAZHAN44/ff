@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>FastFoodGo — Тамақ жеткізу</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+:root{
+  --bg:#07070f;
+  --bg2:#0f0f1d;
+  --bg3:#161625;
+  --card:#131320;
+  --card2:#1a1a2e;
+  --accent:#ff4500;
+  --accent2:#ff7a00;
+  --gold:#ffb800;
+  --green:#00d68f;
+  --blue:#4a9eff;
+  --red:#ff3b5c;
+  --text:#f2f0fb;
+  --text2:#9896b0;
+  --text3:#4e4c66;
+  --border:rgba(255,255,255,0.06);
+  --border2:rgba(255,255,255,0.1);
+  --glow:rgba(255,69,0,0.15);
+  --shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+body{background:var(--bg);min-height:100vh;font-family:'DM Sans',sans-serif;color:var(--text);overflow-x:hidden}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px}
+
+/* TYPOGRAPHY */
+.font-display{font-family:'Syne',sans-serif}
+
+/* LAYOUT */
+.page{min-height:100vh;padding-bottom:90px}
+.container{max-width:680px;margin:0 auto;padding:0 1rem}
+.container-wide{max-width:1100px;margin:0 auto;padding:0 1.5rem}
+
+/* HEADER */
+.main-header{position:sticky;top:0;z-index:200;background:rgba(7,7,15,0.92);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid var(--border)}
+.header-inner{height:62px;display:flex;align-items:center;justify-content:space-between}
+
+/* LOGO */
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
+.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 16px var(--glow)}
+.logo-text{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;background:linear-gradient(135deg,#ff4500,#ffb800);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,15,0.97);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;z-index:300;padding-bottom:env(safe-area-inset-bottom)}
+.bnav-btn{flex:1;padding:10px 4px 12px;background:none;border:none;cursor:pointer;color:var(--text3);font-size:10px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:5px;transition:all .22s;font-family:'DM Sans',sans-serif;letter-spacing:.3px;text-transform:uppercase}
+.bnav-btn.act{color:var(--accent)}
+.bnav-icon{font-size:22px;line-height:1;position:relative}
+.bnav-badge{position:absolute;top:-6px;right:-8px;background:var(--red);color:#fff;border-radius:50%;min-width:16px;height:16px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700;padding:0 3px}
+
+/* DESKTOP NAV */
+.desktop-nav{position:sticky;top:0;z-index:200;background:rgba(7,7,15,0.95);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:none}
+@media(min-width:768px){.desktop-nav{display:block}.bnav{display:none}.page{padding-bottom:30px}}
+.desktop-nav-inner{height:68px;display:flex;align-items:center;justify-content:space-between}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:14px;font-weight:600;cursor:pointer;transition:all .18s;font-family:'DM Sans',sans-serif;letter-spacing:.2px;outline:none}
+.btn:active{transform:scale(.96)}
+.btn-fire{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:14px 24px;font-size:15px;font-weight:700;box-shadow:0 6px 24px var(--glow)}
+.btn-fire:hover{filter:brightness(1.1);box-shadow:0 8px 32px var(--glow)}
+.btn-outline{background:transparent;color:var(--text);border:1.5px solid var(--border2);padding:12px 20px;font-size:14px}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-ghost{background:rgba(255,255,255,0.05);color:var(--text2);padding:10px 18px;font-size:13px;border-radius:12px}
+.btn-ghost:hover{background:rgba(255,255,255,0.09);color:var(--text)}
+.btn-sm{padding:8px 16px;font-size:13px;border-radius:10px}
+.btn-xs{padding:6px 12px;font-size:12px;border-radius:8px}
+.btn-card{background:var(--card2);color:var(--text);border:1px solid var(--border);padding:11px 18px;font-size:14px;border-radius:12px}
+.btn-card:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:rgba(255,59,92,.12);color:var(--red);border:1px solid rgba(255,59,92,.25);padding:10px 16px;font-size:13px}
+.btn-danger:hover{background:rgba(255,59,92,.22)}
+.btn-green{background:rgba(0,214,143,.12);color:var(--green);border:1px solid rgba(0,214,143,.25);padding:10px 16px;font-size:13px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* INPUTS */
+.inp{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;font-size:15px;color:var(--text);outline:none;transition:all .2s;-webkit-appearance:none;font-family:'DM Sans',sans-serif}
+.inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,69,0,.12)}
+.inp::placeholder{color:var(--text3)}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.card-hover{transition:all .22s;cursor:pointer}
+.card-hover:hover{border-color:rgba(255,69,0,.3);transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,69,0,.1)}
+.card-hover:active{transform:translateY(0)}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;letter-spacing:.4px}
+.badge-fire{background:rgba(255,69,0,.12);color:var(--accent);border:1px solid rgba(255,69,0,.2)}
+.badge-gold{background:rgba(255,184,0,.12);color:var(--gold);border:1px solid rgba(255,184,0,.2)}
+.badge-green{background:rgba(0,214,143,.1);color:var(--green);border:1px solid rgba(0,214,143,.2)}
+.badge-blue{background:rgba(74,158,255,.1);color:var(--blue);border:1px solid rgba(74,158,255,.2)}
+
+/* TOAST */
+.toast-wrap{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:9999;pointer-events:none}
+@media(min-width:768px){.toast-wrap{bottom:30px}}
+.toast{background:var(--card2);border:1px solid rgba(255,69,0,.3);border-radius:16px;padding:13px 22px;font-size:14px;font-weight:600;white-space:nowrap;animation:toastIn .3s ease}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .25s}
+@media(min-width:768px){.modal-bg{align-items:center}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:28px 28px 0 0;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;animation:slideUp .3s ease}
+@media(min-width:768px){.modal{border-radius:28px;max-height:85vh}}
+@keyframes slideUp{from{transform:translateY(30px);opacity:.5}to{transform:translateY(0);opacity:1}}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0d0d20 0%,#1a0a08 50%,#0d0d20 100%);position:relative;overflow:hidden;padding:2.5rem 0 2rem}
+.hero::before{content:'';position:absolute;top:-50%;left:-20%;width:60%;height:200%;background:radial-gradient(ellipse,rgba(255,69,0,.12) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-30%;right:-10%;width:50%;height:150%;background:radial-gradient(ellipse,rgba(255,184,0,.08) 0%,transparent 70%);pointer-events:none}
+
+/* RESTAURANT CARD */
+.rest-img{width:100%;height:200px;object-fit:cover;display:block;transition:transform .4s}
+.rest-card:hover .rest-img{transform:scale(1.04)}
+.rest-img-wrap{height:200px;overflow:hidden;position:relative}
+
+/* CATEGORY PILLS */
+.cat-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.cat-scroll::-webkit-scrollbar{display:none}
+.cat-pill{white-space:nowrap;padding:9px 18px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;border:none;font-family:'DM Sans',sans-serif;flex-shrink:0}
+.cat-pill.act{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 16px var(--glow)}
+.cat-pill:not(.act){background:var(--card);color:var(--text2);border:1px solid var(--border)}
+.cat-pill:not(.act):hover{border-color:var(--accent);color:var(--accent)}
+
+/* MENU ITEM */
+.menu-item{display:flex;gap:0;cursor:pointer;transition:all .2s}
+.menu-item:hover{border-color:rgba(255,69,0,.25)}
+.mi-img{width:100px;height:100px;object-fit:cover;flex-shrink:0}
+
+/* QTY CONTROL */
+.qty-ctrl{display:flex;align-items:center;gap:10px}
+.qty-btn{width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .18s;font-family:'DM Sans',sans-serif}
+.qty-btn-minus{background:var(--card2);color:var(--text2);border:1px solid var(--border)}
+.qty-btn-minus:hover{border-color:var(--accent);color:var(--accent)}
+.qty-btn-plus{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 12px var(--glow)}
+.qty-num{font-weight:800;min-width:24px;text-align:center;font-size:16px;font-family:'Syne',sans-serif}
+
+/* STEP TRACKER */
+.step-dot{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .4s;flex-shrink:0}
+.step-line{width:2px;flex:1;min-height:28px;margin:4px auto;transition:background .4s}
+
+/* TOGGLE */
+.toggle{width:52px;height:28px;border-radius:14px;position:relative;cursor:pointer;border:none;transition:background .3s;flex-shrink:0}
+.toggle-thumb{position:absolute;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .3s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+
+/* CART STICKY */
+.cart-sticky{position:sticky;bottom:90px;z-index:100;padding:1rem 0 0}
+@media(min-width:768px){.cart-sticky{bottom:24px}}
+
+/* COMBO */
+.combo-card{background:linear-gradient(135deg,rgba(255,69,0,.08),rgba(255,184,0,.06));border:1px solid rgba(255,184,0,.2);border-radius:20px;padding:1.25rem;cursor:pointer;transition:all .2s}
+.combo-card:hover{border-color:rgba(255,184,0,.4);transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,184,0,.08)}
+
+/* STARS */
+.stars{color:var(--gold);font-size:13px;letter-spacing:1px}
+
+/* SECTION */
+.section{padding:1.5rem 0}
+.section-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:1.25rem}
+
+/* TABS */
+.tab-row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.tab-row::-webkit-scrollbar{display:none}
+.tab-btn{padding:9px 18px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;border:none;font-family:'DM Sans',sans-serif;transition:all .18s;flex-shrink:0}
+.tab-btn.act{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.tab-btn:not(.act){background:var(--card);color:var(--text2);border:1px solid var(--border)}
+
+/* ADMIN TABLE */
+.atable{width:100%;border-collapse:collapse;font-size:14px}
+.atable th{padding:10px 12px;color:var(--text3);text-align:left;font-weight:600;border-bottom:1px solid var(--border);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.atable td{padding:12px;border-bottom:1px solid rgba(255,255,255,.03)}
+.atable tr:hover td{background:rgba(255,255,255,.02)}
+
+/* MAP */
+canvas.map{border-radius:0;display:block;width:100%}
+
+/* LOGIN */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:var(--bg)}
+
+/* PROMO BANNER */
+.promo-banner{background:linear-gradient(135deg,#1a0800,#2d1000,#1a0800);border:1px solid rgba(255,69,0,.25);border-radius:22px;padding:1.5rem;position:relative;overflow:hidden}
+.promo-banner::before{content:'';position:absolute;top:-40px;right:-30px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,69,0,.2),transparent 70%);pointer-events:none}
+
+/* SCROLLABLE HORIZONTAL */
+.h-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.h-scroll::-webkit-scrollbar{display:none}
+
+/* FADE IN */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .35s ease forwards}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:400px){.grid-2{grid-template-columns:1fr}}
+
+/* PAY OPTION */
+.pay-opt{border-radius:16px;padding:1.25rem;cursor:pointer;transition:all .2s;border:2px solid var(--border)}
+.pay-opt.sel{border-color:var(--accent);background:rgba(255,69,0,.06)}
+.pay-opt:not(.sel):hover{border-color:var(--border2)}
+
+/* SHIMMER */
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// ========== DATA ==========
+const AC = {l:"admin",p:"fastfood2025"};
+
+const L = {
+  ru:{
+    home:"Главная",cart:"Корзина",acc:"Профиль",admin:"Админ",courier:"Курьер",
+    back:"Назад",search:"Поиск блюд и ресторанов...",delivery:"Доставка",
+    login:"Войти",logout:"Выйти",pass:"Пароль",total:"Итого",
+    order:"Оформить заказ",empty:"Корзина пуста",go_menu:"К меню",
+    add:"Добавить",added:"Добавлено",addr:"Адрес доставки",pay:"Способ оплаты",
+    promo:"Промокод",apply:"Применить",track:"Отследить заказ",
+    online:"Онлайн",offline:"Офлайн",all:"Все",top:"Топ рестораны",
+    rating:"Рейтинг",min:"мин",free:"Бесплатно",my_orders:"Мои заказы",
+    my_addr:"Мои адреса",fav:"Избранное",profile:"Профиль",save:"Сохранить",
+    delivered:"Доставлено",accept:"Принять",skip:"Пропустить",
+    dashboard:"Дашборд",orders:"Заказы",rests:"Рестораны",couriers:"Курьеры",
+    wrong:"Неверный логин или пароль",combo:"Комбо",sauce:"Соусы",
+    cal:"ккал",popular:"Популярное",new:"Новинка",hit:"Хит",veg:"Вегетарианское",
+    spicy:"Острое",desc_order:"Оформить заказ",close:"Закрыть",
+    choose_size:"Выберите размер",extras:"Дополнения",sides:"Гарниры",drinks:"Напитки",
+    to_cart:"В корзину",payment_done:"Оплата прошла!",continue:"Продолжить"
+  },
+  kk:{
+    home:"Басты",cart:"Себет",acc:"Профиль",admin:"Әкімші",courier:"Курьер",
+    back:"Артқа",search:"Тамақ іздеу...",delivery:"Жеткізу",
+    login:"Кіру",logout:"Шығу",pass:"Құпия сөз",total:"Барлығы",
+    order:"Тапсырыс беру",empty:"Себет бос",go_menu:"Менюге өту",
+    add:"Қосу",added:"Қосылды",addr:"Мекенжай",pay:"Төлем тәсілі",
+    promo:"Промокод",apply:"Қолдану",track:"Тапсырысты бақылау",
+    online:"Онлайн",offline:"Офлайн",all:"Барлығы",top:"Үздік мейрамханалар",
+    rating:"Рейтинг",min:"мин",free:"Тегін",my_orders:"Менің тапсырыстарым",
+    my_addr:"Мекенжайларым",fav:"Таңдаулылар",profile:"Профиль",save:"Сақтау",
+    delivered:"Жеткізілді",accept:"Қабылдау",skip:"Өткізу",
+    dashboard:"Дашборд",orders:"Тапсырыстар",rests:"Мейрамханалар",couriers:"Курьерлер",
+    wrong:"Логин немесе пароль қате",combo:"Комбо",sauce:"Соустар",
+    cal:"ккал",popular:"Танымал",new:"Жаңа",hit:"Хит",veg:"Вегетариандық",
+    spicy:"Өткір",desc_order:"Тапсырыс",close:"Жабу",
+    choose_size:"Өлшем таңдаңыз",extras:"Қосымша",sides:"Гарнир",drinks:"Сусындар",
+    to_cart:"Себетке",payment_done:"Төлем өтті!",continue:"Жалғастыру"
+  }
+};
+
+const CATS_RU = ["Все","Бургер","Пицца","Суши","Азия","Шаурма","Салат","Десерт"];
+const CATS_KK = ["Барлығы","Бургер","Пицца","Суши","Азия","Шаурма","Салат","Десерт"];
+
+const RESTS = [
+  {
+    id:1,name:"Burger Palace",emoji:"🍔",cat:"Бургер",rating:4.8,time:"20-30",price:0,
+    tags:["hit","popular"],disc:"10%",
+    img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=85",
+    cover:"https://images.unsplash.com/photo-1550547660-d9450f859349?w=900&q=85",
+    desc_ru:"Сочные бургеры из отборной говядины. Только свежие ингредиенты!",
+    desc_kk:"Таңдаулы сиыр етінен дайындалған шырынды бургерлер!",
+    count:2431,
+    sections:[
+      {
+        id:"combos",name_ru:"🔥 Комбо-наборы",name_kk:"🔥 Комбо-жиынтықтар",
+        items:[
+          {id:1001,name_ru:"Комбо «Классик»",name_kk:"«Классик» комбо",
+           desc_ru:"Классик Бургер + Картошка фри M + Coca-Cola 0.5л",
+           desc_kk:"Классик Бургер + Картоп фри M + Coca-Cola 0.5л",
+           price:3490,cal:1230,popular:true,new:false,
+           img:"https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&q=80"},
+          {id:1002,name_ru:"Комбо «Двойной удар»",name_kk:"«Екі рет» комбо",
+           desc_ru:"Двойной Чизбургер + Картошка фри L + Milkshake",
+           desc_kk:"Қос Чизбургер + Картоп фри L + Milkshake",
+           price:4990,cal:1680,popular:true,new:false,
+           img:"https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400&q=80"},
+          {id:1003,name_ru:"Комбо «Куриное»",name_kk:"«Тауық» комбо",
+           desc_ru:"Куриный Бургер + Куриные нагетсы 6 шт + Fanta",
+           desc_kk:"Тауық Бургер + Тауық нагетс 6 дана + Fanta",
+           price:3990,cal:1450,popular:false,new:true,
+           img:"https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=400&q=80"},
+        ]
+      },
+      {
+        id:"burgers",name_ru:"🍔 Бургеры",name_kk:"🍔 Бургерлер",
+        items:[
+          {id:1010,name_ru:"Классик Бургер",name_kk:"Классик Бургер",
+           desc_ru:"Говяжья котлета 150г, соус BBQ, маринованные огурцы, лук, салат",
+           desc_kk:"Сиыр еті котлеті 150г, BBQ соусы, маринадталған қияр, пияз, салат",
+           price:2490,cal:650,popular:true,new:false,
+           img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80"},
+          {id:1011,name_ru:"Двойной Чизбургер",name_kk:"Қос Чизбургер",
+           desc_ru:"Двойная говяжья котлета, двойной чеддер, спец. соус Palace",
+           desc_kk:"Қос котлет, қос чеддер ірімшік, арнайы соус Palace",
+           price:3190,cal:850,popular:false,new:false,
+           img:"https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=400&q=80"},
+          {id:1012,name_ru:"Барбекю Бэкон",name_kk:"Барбекю Бэкон",
+           desc_ru:"Говяжья котлета 180г, хрустящий бекон, соус BBQ, карамелизированный лук",
+           desc_kk:"Сиыр еті котлеті 180г, хрустящий бекон, BBQ соусы, карамелизирленген пияз",
+           price:3490,cal:920,popular:true,new:false,
+           img:"https://images.unsplash.com/photo-1608767221051-2b9d18f35a2f?w=400&q=80"},
+          {id:1013,name_ru:"Куриный Хрустящий",name_kk:"Хрустящий Тауық",
+           desc_ru:"Хрустящая куриная котлета, соус тар-тар, айсберг, помидор",
+           desc_kk:"Хрустящий тауық котлеті, тар-тар соусы, айсберг, қызанақ",
+           price:2190,cal:520,popular:true,new:false,
+           img:"https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=400&q=80"},
+          {id:1014,name_ru:"Вегги Бургер",name_kk:"Вегги Бургер",
+           desc_ru:"Котлета из нута и чечевицы, авокадо, руккола, томаты",
+           desc_kk:"Бұршақ котлеті, авокадо, руккола, қызанақ",
+           price:2390,cal:480,popular:false,new:true,veg:true,
+           img:"https://images.unsplash.com/photo-1550317138-10000687a72b?w=400&q=80"},
+        ]
+      },
+      {
+        id:"sides",name_ru:"🍟 Картошка и закуски",name_kk:"🍟 Картоп және тістемелер",
+        items:[
+          {id:1020,name_ru:"Картошка фри S",name_kk:"Картоп фри S",
+           desc_ru:"Хрустящий картофель с морской солью, маленький",desc_kk:"Хрустящий картоп, кішкентай",
+           price:590,cal:280,popular:false,new:false,
+           img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&q=80"},
+          {id:1021,name_ru:"Картошка фри M",name_kk:"Картоп фри M",
+           desc_ru:"Хрустящий картофель с морской солью, средний",desc_kk:"Хрустящий картоп, орташа",
+           price:790,cal:380,popular:true,new:false,
+           img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&q=80"},
+          {id:1022,name_ru:"Картошка фри L",name_kk:"Картоп фри L",
+           desc_ru:"Хрустящий картофель с морской солью, большой",desc_kk:"Хрустящий картоп, үлкен",
+           price:990,cal:490,popular:false,new:false,
+           img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&q=80"},
+          {id:1023,name_ru:"Куриные нагетсы 6 шт",name_kk:"Тауық нагетс 6 дана",
+           desc_ru:"Сочные куриные кусочки в хрустящей панировке",desc_kk:"Хрустящий панировкадағы тауық",
+           price:1290,cal:420,popular:true,new:false,
+           img:"https://images.unsplash.com/photo-1562802378-063ec186a863?w=400&q=80"},
+          {id:1024,name_ru:"Луковые кольца",name_kk:"Пияз сақиналары",
+           desc_ru:"Хрустящие кольца лука в пивном кляре",desc_kk:"Сыра кляріндегі хрустящий пияз сақиналары",
+           price:890,cal:340,popular:false,new:false,
+           img:"https://images.unsplash.com/photo-1639024471283-03518883512d?w=400&q=80"},
+        ]
+      },
+      {
+        id:"sauces",name_ru:"🥫 Соусы и дипы",name_kk:"🥫 Соустар мен диптер",
+        items:[
+          {id:1030,name_ru:"Соус BBQ",name_kk:"BBQ соусы",desc_ru:"Классический барбекю",desc_kk:"Классикалық барбекю",price:190,cal:45,popular:false,new:false,img:"https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400&q=80"},
+          {id:1031,name_ru:"Соус «Бургер»",name_kk:"«Бургер» соусы",desc_ru:"Фирменный соус Palace",desc_kk:"Palace арнайы соусы",price:190,cal:60,popular:true,new:false,img:"https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400&q=80"},
+          {id:1032,name_ru:"Соус Чесночный",name_kk:"Сарымсақ соусы",desc_ru:"Нежный чесночный",desc_kk:"Жұмсақ сарымсақ",price:190,cal:55,popular:false,new:false,img:"https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400&q=80"},
+          {id:1033,name_ru:"Острый соус",name_kk:"Өткір соус",desc_ru:"Очень острый!",desc_kk:"Өте өткір!",price:190,cal:40,popular:false,new:false,spicy:true,img:"https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400&q=80"},
+        ]
+      },
+      {
+        id:"drinks",name_ru:"🥤 Напитки",name_kk:"🥤 Сусындар",
+        items:[
+          {id:1040,name_ru:"Coca-Cola 0.5л",name_kk:"Coca-Cola 0.5л",desc_ru:"Освежающая классика",desc_kk:"Сергітетін классика",price:490,cal:200,popular:true,new:false,img:"https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&q=80"},
+          {id:1041,name_ru:"Fanta Апельсин",name_kk:"Fanta Апельсин",desc_ru:"Цитрусовый вкус",desc_kk:"Цитрус дәмі",price:490,cal:210,popular:false,new:false,img:"https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400&q=80"},
+          {id:1042,name_ru:"Milkshake Шоколад",name_kk:"Шоколадты Milkshake",desc_ru:"Густой молочный коктейль",desc_kk:"Қою сүт коктейлі",price:890,cal:480,popular:true,new:false,img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80"},
+          {id:1043,name_ru:"Вода 0.5л",name_kk:"Су 0.5л",desc_ru:"Негазированная",desc_kk:"Газсыз",price:290,cal:0,popular:false,new:false,img:"https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&q=80"},
+        ]
+      },
+      {
+        id:"desserts",name_ru:"🍦 Десерты",name_kk:"🍦 Десерттер",
+        items:[
+          {id:1050,name_ru:"Мороженое Ваниль",name_kk:"Ванильді Балмұздақ",desc_ru:"Мягкое сливочное мороженое",desc_kk:"Жұмсақ кремді балмұздақ",price:390,cal:220,popular:false,new:false,img:"https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&q=80"},
+          {id:1051,name_ru:"Пирог Яблочный",name_kk:"Алма Пирогы",desc_ru:"Хрустящий пирог с яблочной начинкой",desc_kk:"Алма толтырмасы бар хрустящий пирог",price:490,cal:310,popular:false,new:false,img:"https://images.unsplash.com/photo-1621743478914-cc8a86d7e7b5?w=400&q=80"},
+        ]
+      },
+    ]
+  },
+  {
+    id:2,name:"Pizza Roma",emoji:"🍕",cat:"Пицца",rating:4.7,time:"25-35",price:199,
+    tags:["popular"],disc:null,
+    img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=85",
+    cover:"https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=900&q=85",
+    desc_ru:"Настоящая итальянская пицца. Дровяная печь, моцарелла буффало.",
+    desc_kk:"Шынайы итальяндық пицца. Отынды пеш, буффало моцарелласы.",
+    count:1870,
+    sections:[
+      {
+        id:"combos",name_ru:"🔥 Комбо",name_kk:"🔥 Комбо",
+        items:[
+          {id:2001,name_ru:"Комбо 2 пиццы + Напиток",name_kk:"2 Пицца + Сусын Комбо",
+           desc_ru:"Маргарита + Пепперони + Coca-Cola 1л",desc_kk:"Маргарита + Пепперони + Coca-Cola 1л",
+           price:7490,cal:2200,popular:true,new:false,
+           img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80"},
+          {id:2002,name_ru:"Семейное Комбо",name_kk:"Отбасылық Комбо",
+           desc_ru:"2 большие пиццы + Цезарь салат + 2л Pepsi",desc_kk:"2 үлкен пицца + Цезарь салаты + 2л Pepsi",
+           price:12990,cal:3800,popular:true,new:false,
+           img:"https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&q=80"},
+        ]
+      },
+      {
+        id:"pizzas",name_ru:"🍕 Пиццы",name_kk:"🍕 Пицца",
+        items:[
+          {id:2010,name_ru:"Маргарита",name_kk:"Маргарита",
+           desc_ru:"Томатный соус, моцарелла буффало, свежий базилик",desc_kk:"Томат соусы, буффало моцарелласы, жаңа базилик",
+           price:3490,cal:720,popular:true,new:false,
+           img:"https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80"},
+          {id:2011,name_ru:"Пепперони",name_kk:"Пепперони",
+           desc_ru:"Пикантные кружочки пепперони, моцарелла, томатный соус",desc_kk:"Пікантты пепперони, моцарелла, томат соусы",
+           price:3990,cal:880,popular:true,new:false,
+           img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80"},
+          {id:2012,name_ru:"Четыре сыра",name_kk:"Төрт ірімшік",
+           desc_ru:"Моцарелла, горгонзола, пармезан, чеддер",desc_kk:"Моцарелла, горгонзола, пармезан, чеддер",
+           price:4490,cal:950,popular:false,new:false,
+           img:"https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&q=80"},
+          {id:2013,name_ru:"Дьябло",name_kk:"Дьябло",
+           desc_ru:"Острая колбаска, халапеньо, острый соус",desc_kk:"Өткір шұжық, халапеньо, өткір соус",
+           price:4190,cal:900,popular:false,new:false,spicy:true,
+           img:"https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80"},
+          {id:2014,name_ru:"Вегетарианская",name_kk:"Вегетариандық",
+           desc_ru:"Болгарский перец, шампиньоны, руккола, помидоры черри",desc_kk:"Бұлғарлық бұрыш, саңырауқұлақ, руккола, черри қызанақ",
+           price:3690,cal:680,popular:false,new:false,veg:true,
+           img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80"},
+        ]
+      },
+      {
+        id:"pasta",name_ru:"🍝 Паста",name_kk:"🍝 Паста",
+        items:[
+          {id:2020,name_ru:"Карбонара",name_kk:"Карбонара",desc_ru:"Спагетти, гуанчале, яичный желток, пармезан",desc_kk:"Спагетти, гуанчале, жұмыртқа, пармезан",price:2890,cal:720,popular:true,new:false,img:"https://images.unsplash.com/photo-1612874742237-6526221588e3?w=400&q=80"},
+          {id:2021,name_ru:"Болоньезе",name_kk:"Болоньезе",desc_ru:"Тальятелле, мясной соус болоньезе, пармезан",desc_kk:"Тальятелле, ет соусы болоньезе, пармезан",price:2690,cal:680,popular:false,new:false,img:"https://images.unsplash.com/photo-1598866594230-a7c12756260f?w=400&q=80"},
+        ]
+      },
+      {
+        id:"drinks",name_ru:"🥤 Напитки",name_kk:"🥤 Сусындар",
+        items:[
+          {id:2030,name_ru:"Coca-Cola 0.5л",name_kk:"Coca-Cola 0.5л",desc_ru:"",desc_kk:"",price:490,cal:200,popular:false,new:false,img:"https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&q=80"},
+          {id:2031,name_ru:"Pepsi 1л",name_kk:"Pepsi 1л",desc_ru:"",desc_kk:"",price:790,cal:380,popular:false,new:false,img:"https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400&q=80"},
+        ]
+      },
+    ]
+  },
+  {
+    id:3,name:"Sushi Master",emoji:"🍱",cat:"Суши",rating:4.9,time:"30-40",price:0,
+    tags:["hit","popular"],disc:null,
+    img:"https://images.unsplash.com/photo-1553621042-f6e147245754?w=800&q=85",
+    cover:"https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=900&q=85",
+    desc_ru:"Японская кухня премиум класса. Рыба прилетает из Японии дважды в неделю.",
+    desc_kk:"Premium класс жапондық тағам. Балық аптасына екі рет Жапониядан ұшып келеді.",
+    count:3120,
+    sections:[
+      {
+        id:"sets",name_ru:"🎁 Сеты",name_kk:"🎁 Сеттер",
+        items:[
+          {id:3001,name_ru:"Сет «Токио»",name_kk:"«Токио» сеті",desc_ru:"Калифорния ×8, Филадельфия ×8, Лосось Нигири ×4, Тунец Нигири ×4",desc_kk:"Калифорния ×8, Филадельфия ×8, Лосось Нигири ×4, Тунец Нигири ×4",price:8490,cal:1200,popular:true,new:false,img:"https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80"},
+          {id:3002,name_ru:"Сет «Осака»",name_kk:"«Осака» сеті",desc_ru:"Ролл Спайси Тунец ×8, Авокадо ×8, Мисо суп",desc_kk:"Спайси Тунец ролл ×8, Авокадо ×8, Мисо сорпа",price:6990,cal:980,popular:true,new:false,img:"https://images.unsplash.com/photo-1553621042-f6e147245754?w=400&q=80"},
+        ]
+      },
+      {
+        id:"rolls",name_ru:"🌯 Роллы",name_kk:"🌯 Роллдар",
+        items:[
+          {id:3010,name_ru:"Калифорния",name_kk:"Калифорния",desc_ru:"Краб, авокадо, огурец, кунжут — 8 шт",desc_kk:"Краб, авокадо, қияр, күнжіт — 8 дана",price:2890,cal:420,popular:true,new:false,img:"https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80"},
+          {id:3011,name_ru:"Филадельфия",name_kk:"Филадельфия",desc_ru:"Лосось, сливочный сыр, огурец, авокадо — 8 шт",desc_kk:"Лосось, кремді ірімшік, қияр, авокадо — 8 дана",price:3490,cal:480,popular:true,new:false,img:"https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&q=80"},
+          {id:3012,name_ru:"Спайси Тунец",name_kk:"Спайси Тунец",desc_ru:"Тунец, спайси майо, огурец, авокадо — 8 шт",desc_kk:"Тунец, спайси майо, қияр, авокадо — 8 дана",price:3190,cal:450,popular:false,new:false,spicy:true,img:"https://images.unsplash.com/photo-1553621042-f6e147245754?w=400&q=80"},
+          {id:3013,name_ru:"Дракон",name_kk:"Дракон",desc_ru:"Угорь, авокадо, огурец, соус унаги — 8 шт",desc_kk:"Жылан балық, авокадо, қияр, унаги соусы — 8 дана",price:4290,cal:560,popular:false,new:true,img:"https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80"},
+        ]
+      },
+      {
+        id:"sashimi",name_ru:"🐟 Сашими",name_kk:"🐟 Сашими",
+        items:[
+          {id:3020,name_ru:"Сашими Лосось",name_kk:"Лосось Сашими",desc_ru:"Свежий атлантический лосось — 8 кусков",desc_kk:"Жаңа атлантикалық лосось — 8 кесек",price:4290,cal:350,popular:true,new:false,img:"https://images.unsplash.com/photo-1553621042-f6e147245754?w=400&q=80"},
+          {id:3021,name_ru:"Сашими Тунец",name_kk:"Тунец Сашими",desc_ru:"Свежий тунец премиум — 8 кусков",desc_kk:"Premium тунец — 8 кесек",price:4890,cal:320,popular:false,new:false,img:"https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&q=80"},
+        ]
+      },
+      {
+        id:"soups",name_ru:"🍜 Супы",name_kk:"🍜 Сорпалар",
+        items:[
+          {id:3030,name_ru:"Мисо суп",name_kk:"Мисо сорпасы",desc_ru:"Мисо паста, тофу, водоросли вакаме, зелёный лук",desc_kk:"Мисо паста, тофу, вакаме өсімдіктері, жасыл пияз",price:890,cal:120,popular:true,new:false,img:"https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80"},
+          {id:3031,name_ru:"Том Ям",name_kk:"Том Ям",desc_ru:"Острый кокосовый суп с тигровыми креветками",desc_kk:"Жолбарыс асшаяны бар өткір кокос сорпасы",price:1490,cal:280,popular:false,new:false,spicy:true,img:"https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80"},
+        ]
+      },
+      {
+        id:"drinks",name_ru:"🍵 Напитки",name_kk:"🍵 Сусындар",
+        items:[
+          {id:3040,name_ru:"Зелёный чай",name_kk:"Жасыл шай",desc_ru:"Японский сенча",desc_kk:"Жапон сенча шайы",price:490,cal:5,popular:false,new:false,img:"https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80"},
+          {id:3041,name_ru:"Саке",name_kk:"Сакэ",desc_ru:"Горячее рисовое саке 100мл",desc_kk:"Ыстық күріш сакэ 100мл",price:990,cal:180,popular:false,new:false,img:"https://images.unsplash.com/photo-1614430153882-f0bcd8d49a27?w=400&q=80"},
+        ]
+      },
+    ]
+  },
+  {
+    id:4,name:"Wok & Roll",emoji:"🥢",cat:"Азия",rating:4.6,time:"20-25",price:150,
+    tags:["popular"],disc:"15%",
+    img:"https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=800&q=85",
+    cover:"https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=900&q=85",
+    desc_ru:"Паназиатская кухня. Тайские, китайские, вьетнамские блюда.",
+    desc_kk:"Панасиялық тағам. Тайланд, қытай, вьетнам тағамдары.",
+    count:1560,
+    sections:[
+      {
+        id:"wok",name_ru:"🥢 Вок-блюда",name_kk:"🥢 Вок тағамдары",
+        items:[
+          {id:4010,name_ru:"Пад Тай с креветками",name_kk:"Асшаянды Пад Тай",desc_ru:"Рисовая лапша, тигровые креветки, яйцо, арахис, ростки",desc_kk:"Күріш кеспе, жолбарыс асшаяны, жұмыртқа, жержаңғақ",price:2990,cal:580,popular:true,new:false,img:"https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=80"},
+          {id:4011,name_ru:"Жареный рис с курицей",name_kk:"Тауықты Қуырылған Күріш",desc_ru:"Жасминовый рис, куриное филе, яйцо, овощи, соевый соус",desc_kk:"Жасмин күріші, тауық филесі, жұмыртқа, көкөніс",price:2490,cal:620,popular:true,new:false,img:"https://images.unsplash.com/photo-1512058454905-6b841e7ad132?w=400&q=80"},
+          {id:4012,name_ru:"Вок говядина терияки",name_kk:"Сиыр ет Терияки Вок",desc_ru:"Говядина, болгарский перец, брокколи, соус терияки",desc_kk:"Сиыр еті, бұлғар бұрышы, брокколи, терияки соусы",price:3190,cal:550,popular:false,new:false,img:"https://images.unsplash.com/photo-1512058454905-6b841e7ad132?w=400&q=80"},
+        ]
+      },
+      {
+        id:"soups",name_ru:"🍜 Супы",name_kk:"🍜 Сорпалар",
+        items:[
+          {id:4020,name_ru:"Том Ям",name_kk:"Том Ям",desc_ru:"Острый тайский суп с кокосовым молоком и креветками",desc_kk:"Кокос сүті мен асшаянды өткір тай сорпасы",price:2490,cal:320,popular:true,new:false,spicy:true,img:"https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80"},
+          {id:4021,name_ru:"Фо Бо",name_kk:"Фо Бо",desc_ru:"Вьетнамский суп с говядиной и рисовой лапшой",desc_kk:"Сиыр еті мен күріш кеспелі вьетнамдық сорпа",price:2190,cal:410,popular:false,new:false,img:"https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80"},
+        ]
+      },
+      {
+        id:"drinks",name_ru:"🧋 Напитки",name_kk:"🧋 Сусындар",
+        items:[
+          {id:4030,name_ru:"Тайский чай со льдом",name_kk:"Мұзды Тай шайы",desc_ru:"Крепкий чай, кокосовое молоко, лёд",desc_kk:"Күшті шай, кокос сүті, мұз",price:790,cal:290,popular:true,new:false,img:"https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80"},
+          {id:4031,name_ru:"Bubble Tea Матча",name_kk:"Матча Bubble Tea",desc_ru:"Матча латте, тапиоковые шарики",desc_kk:"Матча латте, тапиока шарлары",price:990,cal:340,popular:false,new:true,img:"https://images.unsplash.com/photo-1558857563-b371033873b8?w=400&q=80"},
+        ]
+      },
+    ]
+  },
+  {
+    id:5,name:"Shawarma King",emoji:"🌯",cat:"Шаурма",rating:4.5,time:"15-20",price:0,
+    tags:["hit"],disc:"20%",
+    img:"https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=800&q=85",
+    cover:"https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=900&q=85",
+    desc_ru:"Король шаурмы Алматы. Мясо с вертела, свежая лепёшка.",
+    desc_kk:"Алматы Шаурма Королі. Ет шампурдан, жаңа нан.",
+    count:4210,
+    sections:[
+      {
+        id:"combos",name_ru:"🔥 Комбо",name_kk:"🔥 Комбо",
+        items:[
+          {id:5001,name_ru:"Комбо «Король»",name_kk:"«Король» комбо",desc_ru:"Шаурма Double + Картошка фри + Айран",desc_kk:"Шаурма Double + Картоп фри + Айран",price:2990,cal:1580,popular:true,new:false,img:"https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&q=80"},
+        ]
+      },
+      {
+        id:"shawarma",name_ru:"🌯 Шаурма",name_kk:"🌯 Шаурма",
+        items:[
+          {id:5010,name_ru:"Шаурма Classic",name_kk:"Classic Шаурма",desc_ru:"Куриное мясо с вертела, свежие овощи, чесночный соус, лаваш",desc_kk:"Шампурдан тауық еті, жаңа көкөністер, сарымсақ соусы, лаваш",price:1490,cal:520,popular:true,new:false,img:"https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&q=80"},
+          {id:5011,name_ru:"Шаурма Double",name_kk:"Double Шаурма",desc_ru:"Двойная порция мяса, два соуса — чесночный и острый",desc_kk:"Қос порция ет, екі соус — сарымсақ және өткір",price:2190,cal:780,popular:true,new:false,img:"https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400&q=80"},
+          {id:5012,name_ru:"Шаурма с говядиной",name_kk:"Сиыр Еттi Шаурма",desc_ru:"Говяжье мясо с вертела, специи, помидор, лук",desc_kk:"Шампурдан сиыр еті, дәмдеуіш, қызанақ, пияз",price:1890,cal:640,popular:false,new:false,img:"https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&q=80"},
+        ]
+      },
+      {
+        id:"sides",name_ru:"🍟 Гарниры",name_kk:"🍟 Гарнирлер",
+        items:[
+          {id:5020,name_ru:"Картошка фри",name_kk:"Картоп фри",desc_ru:"Хрустящая",desc_kk:"Хрустящий",price:690,cal:380,popular:false,new:false,img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&q=80"},
+          {id:5021,name_ru:"Хот-дог",name_kk:"Хот-дог",desc_ru:"Сосиска, горчица, кетчуп",desc_kk:"Сосиска, қыша, кетчуп",price:990,cal:380,popular:false,new:false,img:"https://images.unsplash.com/photo-1612392061787-2d1bb0e0e880?w=400&q=80"},
+        ]
+      },
+      {
+        id:"sauces",name_ru:"🥫 Соусы",name_kk:"🥫 Соустар",
+        items:[
+          {id:5030,name_ru:"Чесночный соус",name_kk:"Сарымсақ соусы",desc_ru:"",desc_kk:"",price:150,cal:45,popular:true,new:false,img:"https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400&q=80"},
+          {id:5031,name_ru:"Острый соус",name_kk:"Өткір соус",desc_ru:"",desc_kk:"",price:150,cal:40,popular:false,new:false,spicy:true,img:"https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400&q=80"},
+          {id:5032,name_ru:"Кетчуп",name_kk:"Кетчуп",desc_ru:"",desc_kk:"",price:100,cal:35,popular:false,new:false,img:"https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400&q=80"},
+        ]
+      },
+      {
+        id:"drinks",name_ru:"🥛 Напитки",name_kk:"🥛 Сусындар",
+        items:[
+          {id:5040,name_ru:"Айран 0.5л",name_kk:"Айран 0.5л",desc_ru:"Свежий кисломолочный напиток",desc_kk:"Жаңа қышқыл сүт сусыны",price:390,cal:150,popular:true,new:false,img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&q=80"},
+          {id:5041,name_ru:"Coca-Cola 0.5л",name_kk:"Coca-Cola 0.5л",desc_ru:"",desc_kk:"",price:490,cal:200,popular:false,new:false,img:"https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&q=80"},
+        ]
+      },
+    ]
+  },
+  {
+    id:6,name:"Green Garden",emoji:"🥗",cat:"Салат",rating:4.7,time:"25-30",price:199,
+    tags:["popular"],disc:null,
+    img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=85",
+    cover:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=900&q=85",
+    desc_ru:"Здоровое питание без компромиссов. Только органические продукты.",
+    desc_kk:"Ымырасыз дұрыс тамақтану. Тек органикалық өнімдер.",
+    count:980,
+    sections:[
+      {
+        id:"combos",name_ru:"🔥 Комбо",name_kk:"🔥 Комбо",
+        items:[
+          {id:6001,name_ru:"Детокс Комбо",name_kk:"Детокс Комбо",desc_ru:"Греческий салат + Смузи + Суп дня",desc_kk:"Грек салаты + Смузи + Күннің сорпасы",price:3990,cal:680,popular:true,new:false,veg:true,img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80"},
+        ]
+      },
+      {
+        id:"salads",name_ru:"🥗 Салаты",name_kk:"🥗 Салаттар",
+        items:[
+          {id:6010,name_ru:"Греческий",name_kk:"Грек салаты",desc_ru:"Огурцы, помидоры черри, маслины, фета, оливковое масло",desc_kk:"Қияр, черри қызанақ, зейтүн, фета, зейтүн майы",price:1990,cal:280,popular:true,new:false,veg:true,img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80"},
+          {id:6011,name_ru:"Цезарь с курицей",name_kk:"Тауықты Цезарь",desc_ru:"Ромэн, куриное филе гриль, пармезан, крутоны, соус Цезарь",desc_kk:"Ромэн, гриль тауық, пармезан, крутон, Цезарь соусы",price:2290,cal:420,popular:true,new:false,img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80"},
+          {id:6012,name_ru:"Боул с киноа",name_kk:"Киноа Боул",desc_ru:"Киноа, авокадо, нут, черри, тахини, семечки",desc_kk:"Киноа, авокадо, бұршақ, черри, тахини, тұқым",price:2490,cal:420,popular:false,new:false,veg:true,img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&q=80"},
+        ]
+      },
+      {
+        id:"smoothies",name_ru:"🥤 Смузи и соки",name_kk:"🥤 Смузи мен шырындар",
+        items:[
+          {id:6020,name_ru:"Смузи-боул Манго",name_kk:"Манго Смузи-боул",desc_ru:"Манго, банан, черника, гранола, кокосовые хлопья",desc_kk:"Манго, банан, көкжидек, гранола, кокос үлпектері",price:1790,cal:350,popular:true,new:false,veg:true,img:"https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=400&q=80"},
+          {id:6021,name_ru:"Детокс Зелёный",name_kk:"Жасыл Детокс",desc_ru:"Шпинат, яблоко, огурец, имбирь, лимон",desc_kk:"Шпинат, алма, қияр, зімбір, лимон",price:1290,cal:120,popular:false,new:false,veg:true,img:"https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=400&q=80"},
+        ]
+      },
+    ]
+  },
+];
+
+const STATUSES_RU = [
+  {key:"placed",  label:"Заказ принят",    icon:"✅"},
+  {key:"prep",    label:"Готовится",        icon:"👨‍🍳"},
+  {key:"ready",   label:"Готов к выдаче",   icon:"📦"},
+  {key:"pickup",  label:"Курьер забрал",    icon:"🛵"},
+  {key:"done",    label:"Доставлено! 🎉",   icon:"🎉"},
+];
+const STATUSES_KK = [
+  {key:"placed",  label:"Тапсырыс қабылданды", icon:"✅"},
+  {key:"prep",    label:"Дайындалуда",          icon:"👨‍🍳"},
+  {key:"ready",   label:"Дайын",                icon:"📦"},
+  {key:"pickup",  label:"Курьер алды",          icon:"🛵"},
+  {key:"done",    label:"Жеткізілді! 🎉",       icon:"🎉"},
+];
+
+// ========== STATE ==========
+const LS = (k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}};
+const LSS = (k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}};
+
+let S = {
+  page:"home",
+  lang: LS("lang","ru"),
+  prevPage: null,
+  cart: LS("cart",{}),
+  cartMeta: LS("cartMeta",{}),
+  rest: null,
+  restSection: null,
+  adminIn: LS("adm",false),
+  adminTab: "dashboard",
+  search: "",
+  cat: null,
+  orderNo: Math.floor(Math.random()*9000)+1000,
+  trackStep: 0,
+  trackEta: 28,
+  trackTimer: null,
+  couOnline: false,
+  couActive: null,
+  couStep: 0,
+  accTab: "profile",
+  payMethod: "kaspi",
+  promoApplied: false,
+  address: LS("addr","Абай, 150, кв.42, Алматы"),
+  payTotal: 0,
+  payStage: 0,
+  toastMsg: null,
+  loginErr: false,
+  restTab: null,
+};
+
+// ========== HELPERS ==========
+const t = k => (L[S.lang]||L.ru)[k]||k;
+const cartQty = () => Object.values(S.cart).reduce((a,b)=>a+b,0);
+const cartSum = () => Object.entries(S.cart).reduce((s,[id,q])=>{
+  const m=S.cartMeta[id]; return s+(m?m.price*q:0);
+},0);
+
+function go(page, data=null){
+  S.prevPage=S.page;
+  if(page==="rest"&&data) S.rest=data;
+  if(page==="tracking") startTrack();
+  S.page=page;
+  S.search="";
+  if(page==="rest") S.restTab=null;
+  window.scrollTo(0,0);
+  R();
+}
+
+function toast(msg){
+  S.toastMsg=msg;
+  clearTimeout(S._toastT);
+  S._toastT=setTimeout(()=>{S.toastMsg=null;R();},2600);
+  R();
+}
+
+function addItem(item){
+  const id=String(item.id);
+  S.cart[id]=(S.cart[id]||0)+1;
+  S.cartMeta[id]=item;
+  LSS("cart",S.cart); LSS("cartMeta",S.cartMeta);
+  toast("🛒 "+( S.lang==="ru"?(item.name_ru||item.name):(item.name_kk||item.name))+" "+t("added")+"!");
+}
+
+function updQty(id,d){
+  id=String(id);
+  const nv=Math.max(0,(S.cart[id]||0)+d);
+  if(nv===0) delete S.cart[id]; else S.cart[id]=nv;
+  LSS("cart",S.cart);
+  R();
+}
+
+function startTrack(){
+  S.trackStep=0; S.trackEta=28;
+  clearInterval(S.trackTimer);
+  [0,8000,18000,30000,45000].forEach((ms,i)=>setTimeout(()=>{S.trackStep=i;R();},ms));
+  S.trackTimer=setInterval(()=>{S.trackEta=Math.max(0,S.trackEta-.05);R();},3000);
+}
+
+// ========== RENDER ==========
+function R(){
+  const app=document.getElementById("root");
+  app.innerHTML=build();
+  attachEv();
+  const mc=document.getElementById("map-cv");
+  const cc=document.getElementById("cou-map");
+  if(mc) drawMap(mc,STATUSES_RU[S.trackStep]?.key||"placed");
+  if(cc) drawMap(cc,["placed","prep","pickup","done"][S.couStep]||"placed");
+}
+
+function build(){
+  let toastHtml="";
+  if(S.toastMsg) toastHtml=`<div class="toast-wrap"><div class="toast">${S.toastMsg}</div></div>`;
+
+  let content="";
+  switch(S.page){
+    case "home":       content=bHome(); break;
+    case "rest":       content=bRest(); break;
+    case "cart":       content=bCart(); break;
+    case "payment":    content=bPayment(); break;
+    case "tracking":   content=bTracking(); break;
+    case "account":    content=bAccount(); break;
+    case "courier":    content=bCourier(); break;
+    case "admin":      content=bAdmin(); break;
+    case "adminLogin": content=bAdminLogin(); break;
+    default:           content=bHome();
+  }
+  const skip=["admin","adminLogin","courier"];
+  const bn=skip.includes(S.page)?"":bBNav();
+  const dn=skip.includes(S.page)?"":bDNav();
+  return `${dn}${content}${bn}${toastHtml}`;
+}
+
+// ===== BOTTOM NAV =====
+function bBNav(){
+  const cnt=cartQty();
+  const items=[
+    {id:"home",ic:"🏠",lb:t("home")},
+    {id:"cart",ic:"🛒",lb:t("cart"),cnt},
+    {id:"account",ic:"👤",lb:t("acc")},
+  ];
+  return `<nav class="bnav">${items.map(i=>`
+    <button class="bnav-btn ${S.page===i.id?"act":""}" onclick="go('${i.id}')">
+      <span class="bnav-icon">${i.ic}${i.cnt>0?`<span class="bnav-badge">${i.cnt}</span>`:""}</span>
+      <span>${i.lb}</span>
+    </button>`).join("")}</nav>`;
+}
+
+function bDNav(){
+  const cnt=cartQty();
+  return `<nav class="desktop-nav">
+    <div class="container-wide"><div class="desktop-nav-inner">
+      <div class="logo" onclick="go('home')">
+        <div class="logo-icon">⚡</div>
+        <span class="logo-text">FastFoodGo</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-ghost" onclick="toggleLang()">🌐 ${S.lang==="ru"?"Қаз":"Рус"}</button>
+        <button class="btn btn-ghost" onclick="go('account')">👤 ${t("acc")}</button>
+        <button class="btn btn-ghost" onclick="go('courier')">🛵 ${t("courier")}</button>
+        <button class="btn btn-ghost" onclick="goadmin()">⚙️ ${t("admin")}</button>
+        <button class="btn btn-fire btn-sm" onclick="go('cart')">
+          🛒 ${t("cart")} ${cnt>0?`<span style="background:rgba(0,0,0,.3);border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">${cnt}</span>`:""}
+        </button>
+      </div>
+    </div></div></nav>`;
+}
+
+function toggleLang(){S.lang=S.lang==="ru"?"kk":"ru";LSS("lang",S.lang);R();}
+function goadmin(){if(S.adminIn)go("admin");else go("adminLogin");}
+
+// ===== HOME =====
+function bHome(){
+  const cats=S.lang==="kk"?CATS_KK:CATS_RU;
+  const sc=S.search.toLowerCase();
+  const filtered=RESTS.filter(r=>{
+    const cm=!S.cat||S.cat===cats[0]||r.cat===S.cat;
+    const sm=!sc||r.name.toLowerCase().includes(sc)||r.cat.toLowerCase().includes(sc);
+    return cm&&sm;
+  });
+
+  const catBtns=cats.map(c=>`
+    <button class="cat-pill ${(!S.cat||S.cat===cats[0])===( c===cats[0])||S.cat===c?"act":""}"
+      onclick="setCat('${c}','${cats[0]}')">${c}</button>`).join("");
+
+  const cards=filtered.map(r=>`
+    <div class="card card-hover rest-card fade-up" onclick="go('rest',${r.id})" style="position:relative">
+      <div class="rest-img-wrap">
+        <img src="${r.img}" class="rest-img" alt="${r.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80'"/>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,15,.75) 0%,transparent 55%)"></div>
+        ${r.disc?`<div style="position:absolute;top:14px;right:14px;background:var(--red);color:#fff;border-radius:10px;padding:5px 12px;font-size:12px;font-weight:800">−${r.disc}</div>`:""}
+        ${r.tags.includes("hit")?`<div style="position:absolute;top:14px;left:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:10px;padding:5px 12px;font-size:12px;font-weight:800">🔥 ХИТ</div>`:""}
+        <div style="position:absolute;bottom:12px;left:14px;font-size:32px">${r.emoji}</div>
+      </div>
+      <div style="padding:1rem">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;line-height:1.2">${r.name}</div>
+            <div style="color:var(--text2);font-size:13px;margin-top:2px">${r.cat}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;margin-left:8px">
+            <div style="color:var(--gold);font-weight:700;font-size:14px">★ ${r.rating}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:14px;font-size:12px;color:var(--text2);margin-bottom:10px;flex-wrap:wrap">
+          <span>⏱ ${r.time} ${t("min")}</span>
+          <span>🚚 ${r.price===0?`<span style="color:var(--green)">${t("free")}</span>`:r.price+"₸"}</span>
+          <span>📦 ${r.count.toLocaleString()}</span>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${r.tags.includes("popular")?`<span class="badge badge-gold">⭐ ${t("popular")}</span>`:""}
+          ${r.disc?`<span class="badge badge-fire">🏷️ ${r.disc}</span>`:""}
+        </div>
+      </div>
+    </div>`).join("");
+
+  return `<div class="page" style="background:var(--bg)">
+    <div class="main-header">
+      <div class="container"><div class="header-inner">
+        <div class="logo" onclick="go('home')">
+          <div class="logo-icon">⚡</div>
+          <span class="logo-text">FastFoodGo</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-xs" onclick="toggleLang()">🌐 ${S.lang==="ru"?"Қаз":"Рус"}</button>
+          <button class="btn btn-fire btn-sm" onclick="go('cart')" style="padding:9px 14px">
+            🛒${cartQty()>0?` <span style="background:rgba(0,0,0,.25);border-radius:50%;width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800">${cartQty()}</span>`:""}
+          </button>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="hero">
+      <div class="container">
+        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,69,0,.1);border:1px solid rgba(255,69,0,.25);border-radius:50px;padding:6px 16px;font-size:12px;font-weight:600;color:var(--accent);margin-bottom:1.25rem">
+          🚀 ${S.lang==="ru"?"Доставка за 20–40 минут":"20–40 минутта жеткізу"}
+        </div>
+        <h1 style="font-family:'Syne',sans-serif;font-size:clamp(1.75rem,6vw,3rem);font-weight:800;line-height:1.1;margin-bottom:.75rem">
+          ${S.lang==="ru"?"Горячая еда":"Ыстық тамақ"}<br>
+          <span style="background:linear-gradient(135deg,var(--accent),var(--accent2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${S.lang==="ru"?"у вашей двери":"есігіңізде"}</span>
+        </h1>
+        <p style="color:var(--text2);font-size:15px;margin-bottom:1.5rem;max-width:480px">
+          ${S.lang==="ru"?"Сотни ресторанов Алматы — в одном приложении. Быстро, вкусно, горячо.":"Алматының жүздеген мейрамханасы — бір қолданбада. Жылдам, дәмді, ыстық."}
+        </p>
+        <div style="position:relative">
+          <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:16px">🔍</span>
+          <input class="inp" style="padding-left:46px;background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)" placeholder="${t("search")}" value="${S.search}" oninput="S.search=this.value;R()"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- STATS -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:1.5rem 0 0">
+        ${[["200+",S.lang==="ru"?"Ресторанов":"Мейрамхана"],["4.8★","Rating"],["30m",S.lang==="ru"?"Среднее":"Орташа"]].map(([v,l])=>`
+          <div style="text-align:center;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:.9rem .5rem">
+            <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${v}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">${l}</div>
+          </div>`).join("")}
+      </div>
+
+      <!-- PROMO -->
+      <div class="promo-banner" style="margin:1.5rem 0">
+        <div style="position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:11px;color:rgba(255,120,0,.8);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">
+              ${S.lang==="ru"?"Специальное предложение":"Арнайы ұсыныс"}
+            </div>
+            <div style="font-family:'Syne',sans-serif;font-size:clamp(1.1rem,4vw,1.4rem);font-weight:800;line-height:1.25;margin-bottom:8px">
+              ${S.lang==="ru"?"−20% на первый заказ!":"Бірінші тапсырысқа −20%!"}
+            </div>
+            <div style="font-size:13px;color:rgba(255,180,0,.8)">
+              ${t("promo")}: <span style="font-weight:800;color:var(--gold)">FIRST20</span>
+            </div>
+          </div>
+          <div style="font-size:56px;flex-shrink:0">🎉</div>
+        </div>
+      </div>
+
+      <!-- CATS -->
+      <div class="cat-scroll" style="margin-bottom:1.5rem">${catBtns}</div>
+
+      <!-- LIST -->
+      <h2 style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:1.25rem">
+        🔥 ${t("top")}
+      </h2>
+      <div style="display:grid;gap:14px;margin-bottom:2rem">
+        ${cards||`<div style="text-align:center;padding:3rem;color:var(--text3)">${S.lang==="ru"?"Ничего не найдено":"Ештеңе табылмады"}</div>`}
+      </div>
+    </div>
+
+    <button class="btn btn-fire" style="position:fixed;bottom:90px;right:16px;z-index:400;border-radius:50px;padding:13px 18px;font-size:13px;box-shadow:0 8px 32px var(--glow)" onclick="go('courier')">
+      🛵 ${S.lang==="ru"?"Стать курьером":"Курьер болу"}
+    </button>
+  </div>`;
+}
+
+function setCat(c,all){S.cat=(c===all?null:c);R();}
+
+// ===== RESTAURANT =====
+function bRest(){
+  const rid=S.rest;
+  const r=RESTS.find(x=>x.id===rid);
+  if(!r){go("home");return "";}
+  const ln=S.lang;
+  if(!S.restTab && r.sections.length>0) S.restTab=r.sections[0].id;
+  const sec=r.sections.find(s=>s.id===S.restTab)||r.sections[0];
+
+  const secBtns=r.sections.map(s=>`
+    <button class="tab-btn ${S.restTab===s.id?"act":""}" onclick="S.restTab='${s.id}';R()">
+      ${ln==="kk"?s.name_kk:s.name_ru}
+    </button>`).join("");
+
+  const sc=S.search.toLowerCase();
+  const items=(sec?sec.items:[]).filter(i=>{
+    if(!sc) return true;
+    const nm=ln==="kk"?(i.name_kk||i.name_ru):(i.name_ru||"");
+    return nm.toLowerCase().includes(sc);
+  });
+
+  const isCombo=sec&&sec.id==="combos";
+
+  const itemsHtml=items.map(item=>{
+    const nm=ln==="kk"?(item.name_kk||item.name_ru):(item.name_ru||"");
+    const ds=ln==="kk"?(item.desc_kk||item.desc_ru):(item.desc_ru||"");
+    const qty=S.cart[String(item.id)]||0;
+    if(isCombo){
+      return `<div class="combo-card" onclick="addItemById(${r.id},'${sec.id}',${item.id})">
+        <div style="display:flex;gap:12px">
+          <img src="${item.img}" alt="${nm}" style="width:90px;height:90px;object-fit:cover;border-radius:14px;flex-shrink:0" loading="lazy" onerror="this.style.display='none'"/>
+          <div style="flex:1">
+            <div style="display:flex;gap:6px;margin-bottom:4px;flex-wrap:wrap">
+              ${item.popular?`<span class="badge badge-fire">🔥 Хит</span>`:""}
+              ${item.new?`<span class="badge badge-blue">✨ ${t("new")}</span>`:""}
+            </div>
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;margin-bottom:4px">${nm}</div>
+            <div style="color:var(--text2);font-size:12px;line-height:1.4;margin-bottom:8px">${ds}</div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${item.price.toLocaleString()}₸</span>
+              ${qty>0?`<div class="qty-ctrl">
+                <button class="qty-btn qty-btn-minus" onclick="event.stopPropagation();updQty(${item.id},-1)">−</button>
+                <span class="qty-num">${qty}</span>
+                <button class="qty-btn qty-btn-plus" onclick="event.stopPropagation();updQty(${item.id},1)">+</button>
+              </div>`:`<button class="btn btn-fire btn-sm" onclick="event.stopPropagation();addItemById(${r.id},'${sec.id}',${item.id})">+ ${t("add")}</button>`}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+    return `<div class="card menu-item card-hover" style="margin-bottom:10px">
+      <img src="${item.img}" alt="${nm}" class="mi-img" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&q=70'"/>
+      <div style="flex:1;padding:.75rem 1rem">
+        <div style="display:flex;gap:6px;margin-bottom:4px;flex-wrap:wrap">
+          ${item.popular?`<span class="badge badge-fire" style="font-size:10px">🔥 Хит</span>`:""}
+          ${item.new?`<span class="badge badge-blue" style="font-size:10px">✨ ${t("new")}</span>`:""}
+          ${item.veg?`<span class="badge badge-green" style="font-size:10px">🌿 Veg</span>`:""}
+          ${item.spicy?`<span class="badge badge-fire" style="font-size:10px">🌶️ ${t("spicy")}</span>`:""}
+        </div>
+        <div style="font-weight:700;font-size:14px;margin-bottom:3px;line-height:1.3">${nm}</div>
+        ${ds?`<div style="color:var(--text2);font-size:12px;margin-bottom:4px;line-height:1.4">${ds}</div>`:""}
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px">${item.cal} ${t("cal")}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${item.price.toLocaleString()}₸</span>
+          ${qty>0?`<div class="qty-ctrl">
+            <button class="qty-btn qty-btn-minus" onclick="updQty(${item.id},-1)">−</button>
+            <span class="qty-num">${qty}</span>
+            <button class="qty-btn qty-btn-plus" onclick="updQty(${item.id},1)">+</button>
+          </div>`:`<button class="btn btn-fire btn-sm" onclick="addItemById(${r.id},'${sec.id}',${item.id})">+ ${t("add")}</button>`}
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+
+  return `<div class="page">
+    <div class="main-header">
+      <div class="container"><div class="header-inner">
+        <button class="btn btn-ghost btn-sm" onclick="go('home')">← ${t("back")}</button>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px">${r.name}</div>
+        <button class="btn btn-fire btn-sm" onclick="go('cart')" style="padding:9px 14px">🛒 ${cartQty()}</button>
+      </div></div>
+    </div>
+
+    <!-- COVER -->
+    <div style="height:220px;position:relative;overflow:hidden">
+      <img src="${r.cover||r.img}" alt="${r.name}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,15,1) 0%,rgba(7,7,15,.3) 60%,transparent 100%)"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:1rem">
+        <div class="container">
+          <h1 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px">${r.name}</h1>
+          <p style="color:rgba(255,255,255,.7);font-size:13px;margin-bottom:6px">${ln==="kk"?r.desc_kk:r.desc_ru}</p>
+          <div style="display:flex;gap:12px;font-size:13px;color:rgba(255,255,255,.75);flex-wrap:wrap">
+            <span style="color:var(--gold)">★ ${r.rating}</span>
+            <span>⏱ ${r.time} ${t("min")}</span>
+            <span>🚚 ${r.price===0?`<span style="color:var(--green)">${t("free")}</span>`:r.price+"₸"}</span>
+            <span>📦 ${r.count.toLocaleString()}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- SEARCH -->
+      <div style="padding:1rem 0 .75rem;position:relative">
+        <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:14px">🔍</span>
+        <input class="inp" style="padding-left:42px" placeholder="${t("search")}" value="${S.search}" oninput="S.search=this.value;R()"/>
+      </div>
+
+      <!-- SECTION TABS -->
+      <div class="tab-row" style="margin-bottom:1.25rem">${secBtns}</div>
+
+      <!-- SECTION TITLE -->
+      ${isCombo?`<div style="background:linear-gradient(135deg,rgba(255,69,0,.08),rgba(255,184,0,.05));border:1px solid rgba(255,184,0,.15);border-radius:16px;padding:1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:12px">
+        <span style="font-size:32px">🔥</span>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px">${ln==="kk"?(sec.name_kk||sec.name_ru):(sec.name_ru||"")}</div>
+          <div style="color:var(--text2);font-size:12px;margin-top:2px">${S.lang==="ru"?"Выгодные наборы — экономьте до 30%":"Тиімді жиынтықтар — 30% дейін үнемдеңіз"}</div>
+        </div>
+      </div>`:""}
+
+      <!-- ITEMS -->
+      <div style="margin-bottom:1.5rem">
+        ${itemsHtml||`<div style="text-align:center;padding:2rem;color:var(--text3)">${S.lang==="ru"?"Ничего не найдено":"Табылмады"}</div>`}
+      </div>
+
+      <!-- CART BTN STICKY -->
+      ${cartQty()>0?`<div class="cart-sticky">
+        <button class="btn btn-fire" style="width:100%;padding:16px;font-size:15px;border-radius:18px" onclick="go('cart')">
+          🛒 ${t("cart")} — ${cartSum().toLocaleString()}₸
+        </button>
+      </div>`:""}
+    </div>
+  </div>`;
+}
+
+function addItemById(restId, secId, itemId){
+  const r=RESTS.find(x=>x.id===restId);
+  if(!r) return;
+  const sec=r.sections.find(s=>s.id===secId);
+  if(!sec) return;
+  const item=sec.items.find(i=>i.id===itemId);
+  if(item) addItem(item);
+}
+
+// ===== CART =====
+function bCart(){
+  const items=Object.entries(S.cart).map(([id,qty])=>{
+    const m=S.cartMeta[id]; if(!m) return null; return{...m,qty,id};
+  }).filter(Boolean);
+  const sub=cartSum();
+  const del=sub>5000?0:499;
+  const disc=S.promoApplied?Math.round(sub*.2):0;
+  const total=sub+del-disc;
+
+  if(items.length===0){
+    return `<div class="page">
+      <div class="main-header"><div class="container"><div class="header-inner">
+        <button class="btn btn-ghost btn-sm" onclick="go('home')">← ${t("back")}</button>
+        <span style="font-family:'Syne',sans-serif;font-weight:800">🛒 ${t("cart")}</span>
+        <div></div>
+      </div></div></div>
+      <div style="text-align:center;padding:5rem 1rem">
+        <div style="font-size:72px;margin-bottom:1.5rem;opacity:.7">🛒</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:1rem">${t("empty")}</h3>
+        <button class="btn btn-fire" style="padding:14px 32px" onclick="go('home')">${t("go_menu")}</button>
+      </div>
+    </div>`;
+  }
+
+  const payOpts=[
+    {id:"kaspi",ic:"🟠",lb:"Kaspi Pay",ds:S.lang==="ru"?"QR-код оплата":"QR-код төлем"},
+    {id:"card",ic:"💳",lb:S.lang==="ru"?"Банковская карта":"Банк картасы",ds:"Visa · Mastercard"},
+    {id:"cash",ic:"💵",lb:S.lang==="ru"?"Наличные":"Қолма-қол",ds:S.lang==="ru"?"Оплата курьеру":"Курьерге төлем"},
+  ];
+
+  return `<div class="page">
+    <div class="main-header"><div class="container"><div class="header-inner">
+      <button class="btn btn-ghost btn-sm" onclick="go('home')">← ${t("back")}</button>
+      <span style="font-family:'Syne',sans-serif;font-weight:800">🛒 ${t("cart")}</span>
+      <div></div>
+    </div></div></div>
+    <div class="container" style="padding-top:1.25rem">
+      <h3 style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.5px">${S.lang==="ru"?"Ваши блюда":"Сіздің тағамдарыңыз"} · ${items.length}</h3>
+      ${items.map(item=>{
+        const nm=S.lang==="kk"?(item.name_kk||item.name_ru):(item.name_ru||"");
+        return `<div class="card" style="display:flex;overflow:hidden;margin-bottom:10px;padding:0">
+          <img src="${item.img||""}" alt="${nm}" style="width:80px;height:80px;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'" loading="lazy"/>
+          <div style="flex:1;padding:.75rem">
+            <div style="font-weight:700;font-size:14px;margin-bottom:2px">${nm}</div>
+            <div style="font-family:'Syne',sans-serif;font-weight:800;color:var(--accent)">${(item.price*item.qty).toLocaleString()}₸</div>
+          </div>
+          <div class="qty-ctrl" style="padding:.75rem">
+            <button class="qty-btn qty-btn-minus" onclick="updQty(${item.id},-1)">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn qty-btn-plus" onclick="updQty(${item.id},1)">+</button>
+          </div>
+        </div>`;
+      }).join("")}
+
+      <!-- ADDRESS -->
+      <div class="card" style="padding:1.25rem;margin-top:1.25rem">
+        <h4 style="font-size:14px;font-weight:700;margin-bottom:.75rem">📍 ${t("addr")}</h4>
+        <input class="inp" value="${S.address}" oninput="S.address=this.value;LSS('addr',this.value)"/>
+      </div>
+
+      <!-- PAYMENT -->
+      <div class="card" style="padding:1.25rem;margin-top:.75rem">
+        <h4 style="font-size:14px;font-weight:700;margin-bottom:.75rem">💳 ${t("pay")}</h4>
+        ${payOpts.map(o=>`
+          <div class="pay-opt ${S.payMethod===o.id?"sel":""}" style="margin-bottom:8px" onclick="S.payMethod='${o.id}';R()">
+            <div style="display:flex;align-items:center;gap:12px">
+              <div style="width:20px;height:20px;border-radius:50%;border:2px solid ${S.payMethod===o.id?"var(--accent)":"var(--text3)"};display:flex;align-items:center;justify-content:center">
+                ${S.payMethod===o.id?`<div style="width:8px;height:8px;border-radius:50%;background:var(--accent)"></div>`:""}
+              </div>
+              <div>
+                <div style="font-weight:700">${o.ic} ${o.lb}</div>
+                <div style="font-size:12px;color:var(--text2)">${o.ds}</div>
+              </div>
+            </div>
+          </div>`).join("")}
+      </div>
+
+      <!-- PROMO -->
+      ${!S.promoApplied?`
+        <div style="display:flex;gap:8px;margin-top:.75rem">
+          <input class="inp" id="promo-inp" placeholder="${t("promo")}: FIRST20" style="flex:1"/>
+          <button class="btn btn-card" onclick="applyPromo()">${t("apply")}</button>
+        </div>
+      `:`<div style="color:var(--green);font-size:13px;font-weight:600;margin-top:.75rem;padding:.75rem;background:rgba(0,214,143,.08);border-radius:12px;border:1px solid rgba(0,214,143,.2)">✅ FIRST20 ${S.lang==="ru"?"применён":"қолданылды"}!</div>`}
+
+      <!-- SUMMARY -->
+      <div class="card" style="padding:1.25rem;margin-top:.75rem;margin-bottom:1.5rem">
+        <div style="display:grid;gap:10px;margin-bottom:1rem">
+          <div style="display:flex;justify-content:space-between;font-size:14px">
+            <span style="color:var(--text2)">${S.lang==="ru"?"Подытог":"Аралық"}</span>
+            <span>${sub.toLocaleString()}₸</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:14px">
+            <span style="color:var(--text2)">${S.lang==="ru"?"Доставка":"Жеткізу"}</span>
+            <span>${del===0?`<span style="color:var(--green)">${t("free")}</span>`:del+"₸"}</span>
+          </div>
+          ${S.promoApplied?`<div style="display:flex;justify-content:space-between;font-size:14px">
+            <span style="color:var(--green)">Скидка −20%</span>
+            <span style="color:var(--green)">−${disc.toLocaleString()}₸</span>
+          </div>`:""}
+          <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;justify-content:space-between">
+            <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px">${t("total")}</span>
+            <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${total.toLocaleString()}₸</span>
+          </div>
+        </div>
+        <button class="btn btn-fire" style="width:100%;padding:16px;font-size:15px;border-radius:16px" onclick="S.payTotal=${total};S.payStage=1;go('payment')">
+          ${t("order")} — ${total.toLocaleString()}₸
+        </button>
+        <div style="text-align:center;font-size:11px;color:var(--text3);margin-top:8px">🔒 SSL ${S.lang==="ru"?"Безопасная оплата":"Қауіпсіз төлем"}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function applyPromo(){
+  const v=document.getElementById("promo-inp")?.value||"";
+  if(v.toUpperCase()==="FIRST20"){S.promoApplied=true;toast("✅ Промокод FIRST20 "+t("added")+"!");R();}
+  else toast("❌ "+(S.lang==="ru"?"Промокод не найден":"Промокод табылмады"));
+}
+
+// ===== PAYMENT =====
+function bPayment(){
+  const total=S.payTotal||0;
+  if(S.payStage===2){
+    return `<div class="page" style="display:flex;align-items:center;justify-content:center;min-height:100vh">
+      <div style="text-align:center;padding:2rem;max-width:360px">
+        <div style="width:90px;height:90px;background:rgba(0,214,143,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:44px">✅</div>
+        <h2 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:.75rem">${t("payment_done")}</h2>
+        <p style="color:var(--text2);margin-bottom:2rem">${S.lang==="ru"?"Заказ №":"Тапсырыс №"} <span style="color:var(--accent);font-weight:700">FF-${S.orderNo}</span></p>
+        <div style="background:rgba(0,214,143,.06);border:1px solid rgba(0,214,143,.2);border-radius:20px;padding:1.5rem;margin-bottom:2rem">
+          <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--green)">${total.toLocaleString()}₸</div>
+          <div style="color:var(--text2);font-size:13px;margin-top:4px">${S.lang==="ru"?"Успешно оплачено":"Сәтті төленді"}</div>
+        </div>
+        <button class="btn btn-fire" style="width:100%;padding:16px" onclick="completeOrder()">${t("track")} 🛵</button>
+      </div>
+    </div>`;
+  }
+
+  if(S.payMethod==="kaspi") return bKaspi(total);
+  if(S.payMethod==="card") return bCard(total);
+
+  return `<div class="page">
+    <div class="main-header"><div class="container"><div class="header-inner">
+      <button class="btn btn-ghost btn-sm" onclick="go('cart')">← ${t("back")}</button>
+      <span style="font-family:'Syne',sans-serif;font-weight:800">💵 ${t("pay")}</span>
+      <div></div>
+    </div></div></div>
+    <div class="container" style="padding:2rem 1rem;text-align:center">
+      <div style="font-size:72px;margin-bottom:1.5rem">💵</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:.75rem">${S.lang==="ru"?"Оплата наличными":"Қолма-қол төлем"}</h2>
+      <p style="color:var(--text2);margin-bottom:2rem">${S.lang==="ru"?"Оплатите курьеру при получении":"Алған кезде курьерге төлеңіз"}</p>
+      <div class="card" style="padding:1.5rem;margin-bottom:2rem">
+        <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${total.toLocaleString()}₸</div>
+      </div>
+      <button class="btn btn-fire" style="width:100%;padding:16px" onclick="doSimPay()">✅ ${S.lang==="ru"?"Подтвердить":"Растау"}</button>
+    </div>
+  </div>`;
+}
+
+function bKaspi(total){
+  const qr=[];
+  for(let r=0;r<21;r++) for(let c=0;c<21;c++){
+    const corner=(r<7&&c<7)||(r<7&&c>13)||(r>13&&c<7);
+    const inner=(r>=2&&r<=4&&c>=2&&c<=4)||(r>=2&&r<=4&&c>=16&&c<=18)||(r>=16&&r<=18&&c>=2&&c<=4);
+    let f="#07070f";
+    if(inner) f="#ff4500";
+    else if(corner) f="#f2f0fb";
+    else if((r*17+c*13+99)%3===0) f="#f2f0fb";
+    qr.push(`<rect x="${c*10}" y="${r*10}" width="9" height="9" fill="${f}" rx="1.5"/>`);
+  }
+  return `<div class="page">
+    <div class="main-header"><div class="container"><div class="header-inner">
+      <button class="btn btn-ghost btn-sm" onclick="go('cart')">← ${t("back")}</button>
+      <span style="font-weight:700;color:#ff6600">🟠 Kaspi Pay</span>
+      <div></div>
+    </div></div></div>
+    <div class="container" style="padding:1.5rem 1rem">
+      <div style="background:linear-gradient(135deg,#cc4400,#ff7700);border-radius:22px;padding:1.5rem;text-align:center;margin-bottom:1.5rem">
+        <div style="font-size:12px;opacity:.85;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">${S.lang==="ru"?"Сумма к оплате":"Төлем сомасы"}</div>
+        <div style="font-family:'Syne',sans-serif;font-size:38px;font-weight:800">${total.toLocaleString()}₸</div>
+        <div style="font-size:12px;margin-top:4px;opacity:.8">FastFoodGo</div>
+      </div>
+      <div class="card" style="padding:2rem;text-align:center;margin-bottom:1.5rem">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem">${S.lang==="ru"?"Отсканируйте в приложении Kaspi":"Kaspi қолданбасында сканерлеңіз"}</div>
+        <div style="display:inline-block;background:#07070f;padding:16px;border-radius:18px;margin-bottom:1rem">
+          <svg width="210" height="210" viewBox="0 0 210 210">${qr.join("")}</svg>
+        </div>
+        <div style="font-size:11px;color:var(--text3)">${S.lang==="ru"?"QR действителен 10 минут":"QR 10 минут жарамды"}</div>
+      </div>
+      <button class="btn btn-fire" style="width:100%;padding:16px;font-size:15px" onclick="doSimPay()">✅ ${S.lang==="ru"?"Я оплатил(а)":"Мен төледім"}</button>
+      <button class="btn btn-outline" style="width:100%;margin-top:8px;padding:14px" onclick="go('cart')">← ${t("back")}</button>
+    </div>
+  </div>`;
+}
+
+function bCard(total){
+  return `<div class="page">
+    <div class="main-header"><div class="container"><div class="header-inner">
+      <button class="btn btn-ghost btn-sm" onclick="go('cart')">← ${t("back")}</button>
+      <span style="font-family:'Syne',sans-serif;font-weight:800">💳 ${S.lang==="ru"?"Карта":"Карта"}</span>
+      <div></div>
+    </div></div></div>
+    <div class="container" style="padding:1.5rem 1rem">
+      <div style="background:linear-gradient(135deg,#1a1a3a,#2a2a55);border:1px solid rgba(100,100,200,.25);border-radius:22px;padding:1.5rem;margin-bottom:1.5rem;max-width:320px;margin-left:auto;margin-right:auto;aspect-ratio:1.6/1;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
+        <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(100,100,255,.1)"></div>
+        <div style="position:absolute;bottom:-50px;left:-30px;width:180px;height:180px;border-radius:50%;background:rgba(74,158,255,.07)"></div>
+        <div style="font-size:26px">💳</div>
+        <div>
+          <div id="cn-disp" style="font-size:16px;letter-spacing:3px;font-family:monospace;color:rgba(255,255,255,.8);margin-bottom:.75rem">•••• •••• •••• ••••</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.6)">
+            <span id="cname-disp">ИМЯ ФАМИЛИЯ</span>
+            <span id="cexp-disp">MM/YY</span>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="padding:1.25rem;margin-bottom:1rem">
+        <div style="margin-bottom:1rem">
+          <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px">${S.lang==="ru"?"Номер карты":"Карта нөмірі"}</label>
+          <input class="inp" placeholder="0000 0000 0000 0000" maxlength="19" oninput="fmtCard(this)"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem">
+          <div><label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px">MM/YY</label><input class="inp" placeholder="MM/YY" maxlength="5" oninput="fmtExp(this)"/></div>
+          <div><label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px">CVV</label><input class="inp" placeholder="•••" maxlength="3" type="password"/></div>
+        </div>
+        <div><label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px">${S.lang==="ru"?"Имя на карте":"Картадағы аты"}</label>
+        <input class="inp" placeholder="IVAN IVANOV" oninput="document.getElementById('cname-disp').textContent=this.value.toUpperCase()||'ИМЯ ФАМИЛИЯ'"/></div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:12px;margin-bottom:1.5rem;flex-wrap:wrap">
+        ${["🔒 SSL","💳 Visa","💳 MC","🛡️ 3D-Secure"].map(b=>`<span style="font-size:11px;color:var(--text3)">${b}</span>`).join("")}
+      </div>
+      <button class="btn btn-fire" style="width:100%;padding:16px;font-size:15px" onclick="doSimPay()">${S.lang==="ru"?"Оплатить":"Төлеу"} ${total.toLocaleString()}₸</button>
+    </div>
+  </div>`;
+}
+
+function doSimPay(){
+  S.payStage=2;
+  S.cart={}; S.cartMeta={};
+  S.promoApplied=false;
+  LSS("cart",{}); LSS("cartMeta",{});
+  R();
+}
+function completeOrder(){go("tracking");}
+
+// ===== TRACKING =====
+function bTracking(){
+  const sts=S.lang==="kk"?STATUSES_KK:STATUSES_RU;
+  const cur=sts[S.trackStep]||sts[0];
+  const eta=Math.ceil(S.trackEta);
+  const done=S.trackStep===4;
+
+  return `<div class="page">
+    <div class="main-header"><div class="container"><div class="header-inner">
+      <button class="btn btn-ghost btn-sm" onclick="go('home')">← ${S.lang==="ru"?"Главная":"Басты"}</button>
+      <span style="font-family:'Syne',sans-serif;font-weight:800">📦 ${t("track")}</span>
+      <span style="color:var(--text2);font-size:12px">FF-${S.orderNo}</span>
+    </div></div></div>
+    <div class="container" style="padding:1rem">
+      <div class="card" style="text-align:center;padding:1.75rem;margin-bottom:1rem${done?";background:rgba(0,214,143,.05);border-color:rgba(0,214,143,.2)":""}">
+        <div style="font-size:60px;margin-bottom:.75rem">${cur.icon}</div>
+        <h2 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:.5rem">${cur.label}</h2>
+        ${!done?`<div style="font-family:'Syne',sans-serif;font-size:40px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${eta}<span style="font-size:16px;font-weight:400;color:var(--text2)"> мин</span></div>`:""}
+      </div>
+      <div class="card" style="overflow:hidden;margin-bottom:1rem">
+        <div style="padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-weight:700;font-size:14px">🗺️ ${S.lang==="ru"?"Карта доставки":"Жеткізу картасы"}</span>
+          <span style="font-size:12px;color:var(--green)">● Live</span>
+        </div>
+        <canvas id="map-cv" width="600" height="260" class="map"></canvas>
+        <div style="padding:.75rem 1rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px">
+          <span style="color:var(--text2)">🛵 Асан К.</span>
+          <span style="color:var(--gold)">★ 4.9 · 347 ${S.lang==="ru"?"доставок":"жеткізу"}</span>
+        </div>
+      </div>
+      <div class="card" style="padding:1.25rem">
+        <h3 style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;margin-bottom:1.25rem">${S.lang==="ru"?"Статус заказа":"Тапсырыс мәртебесі"}</h3>
+        ${sts.map((s,i)=>{
+          const done2=i<S.trackStep, act=i===S.trackStep;
+          return `<div style="display:flex;gap:1rem;margin-bottom:${i<sts.length-1?"1.25rem":"0"}">
+            <div style="display:flex;flex-direction:column;align-items:center">
+              <div class="step-dot" style="border:2px solid ${done2||act?"var(--accent)":"var(--text3)"};background:${done2||act?"rgba(255,69,0,.1)":"transparent"}">${done2?"✓":s.icon}</div>
+              ${i<sts.length-1?`<div class="step-line" style="background:${done2?"var(--accent)":"var(--text3)"}"></div>`:""}
+            </div>
+            <div style="flex:1;padding-top:8px">
+              <div style="font-weight:${act?700:400};color:${act?"var(--text)":"var(--text2)"}">${s.label}</div>
+              ${done2?`<div style="font-size:12px;color:var(--green);margin-top:2px">✅ ${S.lang==="ru"?"Выполнено":"Орындалды"}</div>`:""}
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ===== MAP CANVAS =====
+function drawMap(canvas,status){
+  if(!canvas) return;
+  const ctx=canvas.getContext("2d");
+  const W=canvas.width,H=canvas.height;
+  const route=[{x:.1,y:.82},{x:.22,y:.65},{x:.38,y:.58},{x:.52,y:.45},{x:.67,y:.32},{x:.82,y:.2}];
+  const sm={placed:0,prep:.1,ready:.15,pickup:.5,done:1};
+  const tp=sm[status]||0;
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function lerpPt(pts,t){
+    const sg=pts.length-1; const i=Math.min(Math.floor(t*sg),sg-1);
+    const lt=t*sg-i; return{x:lerp(pts[i].x,pts[i+1].x,lt),y:lerp(pts[i].y,pts[i+1].y,lt)};
+  }
+  ctx.fillStyle="#0a0a18"; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle="rgba(255,255,255,.025)"; ctx.lineWidth=1;
+  for(let i=0;i<14;i++){
+    ctx.beginPath();ctx.moveTo(i*W/13,0);ctx.lineTo(i*W/13,H);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,i*H/13);ctx.lineTo(W,i*H/13);ctx.stroke();
+  }
+  const roads=[[.1,.9,.5,.4,.9,.1],[0,.45,1,.45],[.45,0,.55,1],[0,.25,1,.7],[.2,0,.85,1]];
+  ctx.strokeStyle="rgba(255,255,255,.06)"; ctx.lineWidth=4;
+  for(let i=0;i<roads.length;i+=2){
+    if(roads[i+1]){
+      const r=roads[i];
+      ctx.beginPath();ctx.moveTo(r[0]*W,r[1]*H);
+      for(let j=2;j<r.length;j+=2)ctx.lineTo(r[j]*W,r[j+1]*H);
+      ctx.stroke();
+    }
+  }
+  [[0,.9,.5,.4,.9,.1],[0,.45,1,.45],[.45,0,.55,1],[0,.25,1,.7],[.2,0,.85,1]].forEach(pts=>{
+    if(pts.length<4)return;
+    ctx.strokeStyle="rgba(255,255,255,.06)";ctx.lineWidth=4;
+    ctx.beginPath();ctx.moveTo(pts[0]*W,pts[1]*H);
+    for(let j=2;j<pts.length;j+=2)ctx.lineTo(pts[j]*W,pts[j+1]*H);
+    ctx.stroke();
+  });
+  ctx.strokeStyle="rgba(255,69,0,.2)";ctx.lineWidth=2;ctx.setLineDash([6,5]);
+  ctx.beginPath();ctx.moveTo(route[0].x*W,route[0].y*H);
+  route.forEach(p=>ctx.lineTo(p.x*W,p.y*H));ctx.stroke();ctx.setLineDash([]);
+  ctx.strokeStyle="var(--accent)";ctx.lineWidth=3;
+  ctx.beginPath();
+  for(let i=0;i<=60;i++){
+    const pt=lerpPt(route,Math.min(i/60,tp));
+    i===0?ctx.moveTo(pt.x*W,pt.y*H):ctx.lineTo(pt.x*W,pt.y*H);
+  }ctx.stroke();
+  const dst=route[route.length-1];
+  ctx.shadowColor="#4a9eff";ctx.shadowBlur=18;
+  ctx.fillStyle="#4a9eff";ctx.beginPath();ctx.arc(dst.x*W,dst.y*H,10,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(dst.x*W,dst.y*H,4,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;
+  const pos=lerpPt(route,tp);
+  ctx.shadowColor="var(--accent)";ctx.shadowBlur=22;
+  ctx.fillStyle="var(--accent)";ctx.beginPath();ctx.arc(pos.x*W,pos.y*H,14,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#fff";ctx.font="bold 13px sans-serif";
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  ctx.fillText("🛵",pos.x*W,pos.y*H+1);ctx.shadowBlur=0;
+  const pulse=(Date.now()%1200)/1200;
+  ctx.strokeStyle=`rgba(255,69,0,${.5*(1-pulse)})`;ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(pos.x*W,pos.y*H,14+pulse*24,0,Math.PI*2);ctx.stroke();
+}
+
+// ===== ACCOUNT =====
+function bAccount(){
+  const tabs=[
+    {id:"profile",l:"👤 "+t("profile")},
+    {id:"orders",l:"📦 "+t("my_orders")},
+    {id:"addr",l:"📍 "+t("my_addr")},
+    {id:"fav",l:"❤️ "+t("fav")},
+  ];
+  const orders=[
+    {id:"FF-2341",date:"15 май",rest:"Burger Palace",items:"Классик ×2, Фри",total:5470},
+    {id:"FF-2198",date:"10 май",rest:"Sushi Master",items:"Калифорния ×3",total:9170},
+    {id:"FF-2051",date:"3 май",rest:"Pizza Roma",items:"Пепперони ×1",total:4488},
+  ];
+  let tc="";
+  if(S.accTab==="profile"){
+    tc=`<div class="card" style="padding:1.25rem">
+      <div style="display:grid;gap:12px">
+        <input class="inp" value="Алибек Сейтов" placeholder="${S.lang==="ru"?"Имя":"Аты-жөні"}"/>
+        <input class="inp" value="+7 (777) 123-45-67" placeholder="Телефон"/>
+        <input class="inp" value="alibek@example.com" placeholder="Email"/>
+        <button class="btn btn-fire" style="padding:14px" onclick="toast('✅ ${S.lang==="ru"?"Сохранено":"Сақталды"}!')">${t("save")}</button>
+      </div>
+    </div>`;
+  } else if(S.accTab==="orders"){
+    tc=orders.map(o=>`<div class="card" style="padding:1.25rem;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div style="font-weight:700;margin-bottom:3px">${o.rest}</div>
+          <div style="color:var(--text2);font-size:13px;margin-bottom:3px">${o.items}</div>
+          <div style="color:var(--text3);font-size:12px">${o.date} · #${o.id}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Syne',sans-serif;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${o.total.toLocaleString()}₸</div>
+          <span class="badge badge-green" style="margin-top:4px">${t("delivered")}</span>
+        </div>
+      </div>
+    </div>`).join("");
+  } else if(S.accTab==="addr"){
+    tc=`<div class="card" style="padding:1.25rem;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+      <div><div style="font-weight:700;margin-bottom:4px">🏠 ${S.lang==="ru"?"Дом":"Үй"}</div><div style="color:var(--text2);font-size:13px">Абай 150, кв.42</div></div>
+      <span class="badge badge-green">${S.lang==="ru"?"Основной":"Негізгі"}</span>
+    </div>
+    <div class="card" style="padding:1.25rem;margin-bottom:10px"><div style="font-weight:700;margin-bottom:4px">🏢 ${S.lang==="ru"?"Работа":"Жұмыс"}</div><div style="color:var(--text2);font-size:13px">Аль-Фараби 77, оф.203</div></div>
+    <button class="btn btn-outline" style="width:100%;padding:14px">+ ${S.lang==="ru"?"Добавить":"Қосу"}</button>`;
+  } else {
+    tc=`<div style="display:grid;gap:10px">${RESTS.slice(0,3).map(r=>`
+      <div class="card card-hover" onclick="go('rest',${r.id})" style="display:flex;overflow:hidden;padding:0">
+        <img src="${r.img}" style="width:80px;height:70px;object-fit:cover" loading="lazy"/>
+        <div style="padding:.75rem"><div style="font-weight:700;font-size:14px">${r.name}</div><div style="color:var(--text2);font-size:12px">★ ${r.rating} · ${r.time} мин</div></div>
+      </div>`).join("")}</div>`;
+  }
+
+  return `<div class="page">
+    <div class="main-header"><div class="container"><div class="header-inner">
+      <button class="btn btn-ghost btn-sm" onclick="go('home')">← ${t("back")}</button>
+      <span style="font-family:'Syne',sans-serif;font-weight:800">👤 ${t("acc")}</span>
+      <div></div>
+    </div></div></div>
+    <div class="container" style="padding-top:1.25rem">
+      <div class="card" style="padding:1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:1rem">
+        <div style="width:60px;height:60px;border-radius:50%;background:rgba(255,69,0,.12);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">👤</div>
+        <div style="flex:1">
+          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800">Алибек Сейтов</div>
+          <div style="color:var(--text2);font-size:13px">+7 (777) 123-45-67</div>
+        </div>
+        <span class="badge badge-gold">⭐ Premium</span>
+      </div>
+      <div class="tab-row" style="margin-bottom:1.25rem">${tabs.map(tb=>`<button class="tab-btn ${S.accTab===tb.id?"act":""}" onclick="S.accTab='${tb.id}';R()">${tb.l}</button>`).join("")}</div>
+      ${tc}
+    </div>
+  </div>`;
+}
+
+// ===== COURIER =====
+function bCourier(){
+  const dsts=S.lang==="ru"
+    ?["Еду в ресторан","Забрал заказ","В пути к клиенту","Доставлено ✅"]
+    :["Мейрамханаға барамын","Тапсырысты алдым","Клиентке барамын","Жеткіздім ✅"];
+  const pending=[
+    {id:"FF-2501",rest:"Burger Palace",addr:"Жибек жолы 45, кв.12",items:"Классик Бургер ×2, Фри",total:5870,dist:"1.2 км"},
+    {id:"FF-2502",rest:"Pizza Roma",addr:"Достық 88, кв.7",items:"Пепперони ×1",total:3990,dist:"2.4 км"},
+  ];
+
+  return `<div class="page">
+    <div class="main-header"><div class="container"><div class="header-inner">
+      <button class="btn btn-ghost btn-sm" onclick="go('home')">← ${S.lang==="ru"?"Выход":"Шығу"}</button>
+      <span style="font-family:'Syne',sans-serif;font-weight:800">🛵 ${S.lang==="ru"?"Курьер":"Курьер"}</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:12px;color:${S.couOnline?"var(--green)":"var(--text3)"}">${S.couOnline?t("online"):t("offline")}</span>
+        <button class="toggle" style="background:${S.couOnline?"var(--green)":"var(--text3)"}" onclick="S.couOnline=!S.couOnline;R()">
+          <div class="toggle-thumb" style="left:${S.couOnline?"27px":"3px"}"></div>
+        </button>
+      </div>
+    </div></div></div>
+    <div class="container" style="padding-top:1.25rem">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem">
+        ${[[S.lang==="ru"?"Доставок":"Жеткізу","8","var(--gold)"],[S.lang==="ru"?"Заработано":"Табыс","12 400₸","var(--green)"],["Рейтинг","★ 4.9","var(--blue)"]].map(([l,v,c])=>`
+          <div class="card" style="text-align:center;padding:1rem">
+            <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:${c}">${v}</div>
+            <div style="color:var(--text2);font-size:11px;margin-top:2px">${l}</div>
+          </div>`).join("")}
+      </div>
+
+      ${S.couActive?`
+        <div class="card" style="padding:1.25rem;margin-bottom:1rem;border-color:rgba(255,69,0,.3)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+            <span style="font-family:'Syne',sans-serif;font-weight:800">${S.lang==="ru"?"Активный заказ":"Белсенді тапсырыс"}</span>
+            <span class="badge badge-fire">${dsts[S.couStep]}</span>
+          </div>
+          <div style="color:var(--text2);font-size:13px;margin-bottom:4px">📍 ${S.couActive.addr}</div>
+          <div style="color:var(--text2);font-size:13px;margin-bottom:1rem">${S.couActive.items}</div>
+          <canvas id="cou-map" width="600" height="180" class="map" style="border-radius:16px;margin-bottom:1rem"></canvas>
+          ${S.couStep<3?`<button class="btn btn-fire" style="width:100%;padding:14px" onclick="S.couStep++;R()">${[S.lang==="ru"?"Прибыл в ресторан →":"Мейрамханаға келдім →",S.lang==="ru"?"Забрал заказ →":"Алдым →",S.lang==="ru"?"Доставил ✅":"Жеткіздім ✅"][S.couStep]}</button>`:`<button class="btn btn-outline" style="width:100%;padding:14px" onclick="S.couActive=null;S.couStep=0;R()">${S.lang==="ru"?"Завершить":"Аяқтау"}</button>`}
+        </div>
+      `:`
+        <h3 style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:1rem">${S.lang==="ru"?"Новые заказы":"Жаңа тапсырыстар"}</h3>
+        ${!S.couOnline?`<div class="card" style="text-align:center;padding:3rem"><div style="font-size:48px;margin-bottom:1rem">😴</div><p style="color:var(--text2)">${S.lang==="ru"?"Включите онлайн":"Онлайн қосыңыз"}</p></div>`
+        :pending.map(o=>`<div class="card" style="padding:1.25rem;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:1rem">
+            <div><div style="font-weight:700;margin-bottom:4px">${o.rest}</div><div style="color:var(--text2);font-size:13px;margin-bottom:4px">${o.items}</div><div style="color:var(--text2);font-size:13px">📍 ${o.addr}</div></div>
+            <div style="text-align:right"><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${o.total.toLocaleString()}₸</div><div style="color:var(--text2);font-size:12px">📏 ${o.dist}</div></div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-fire" style="flex:1;padding:12px" onclick="S.couActive=${JSON.stringify(o).replace(/"/g,"'")};S.couStep=0;R()">✅ ${t("accept")}</button>
+            <button class="btn btn-outline" style="padding:12px 20px">${t("skip")}</button>
+          </div>
+        </div>`).join("")}
+      `}
+    </div>
+  </div>`;
+}
+
+// ===== ADMIN LOGIN =====
+function bAdminLogin(){
+  return `<div class="login-page">
+    <div style="width:100%;max-width:400px">
+      <div style="text-align:center;margin-bottom:2rem">
+        <div style="width:70px;height:70px;background:rgba(255,69,0,.1);border:1px solid rgba(255,69,0,.25);border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 1rem">⚙️</div>
+        <h1 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:.5rem">${S.lang==="ru"?"Панель администратора":"Әкімші панелі"}</h1>
+      </div>
+      <div class="card" style="padding:2rem">
+        <div style="margin-bottom:1rem"><label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px">Логин</label><input class="inp" id="al" placeholder="admin"/></div>
+        <div style="margin-bottom:1.5rem"><label style="font-size:12px;color:var(--text2);display:block;margin-bottom:6px">${t("pass")}</label><input class="inp" id="ap" type="password" placeholder="••••••••"/></div>
+        ${S.loginErr?`<div style="color:var(--red);font-size:13px;margin-bottom:1rem;text-align:center">${t("wrong")}</div>`:""}
+        <button class="btn btn-fire" style="width:100%;padding:14px" onclick="doLogin()">${t("login")} →</button>
+        <button class="btn btn-outline" style="width:100%;margin-top:8px;padding:12px" onclick="go('home')">← ${S.lang==="ru"?"Назад":"Артқа"}</button>
+        <div style="text-align:center;font-size:12px;color:var(--text3);margin-top:1rem">Hint: admin / fastfood2025</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function doLogin(){
+  const l=document.getElementById("al")?.value||"";
+  const p=document.getElementById("ap")?.value||"";
+  if(l===AC.l&&p===AC.p){S.adminIn=true;S.loginErr=false;LSS("adm",true);go("admin");}
+  else{S.loginErr=true;R();}
+}
+
+// ===== ADMIN =====
+function bAdmin(){
+  if(!S.adminIn){go("adminLogin");return "";}
+  const tabs=[{id:"dashboard",l:"📊 "+t("dashboard")},{id:"orders",l:"📦 "+t("orders")},{id:"rests",l:"🍽️ "+t("rests")},{id:"couriers",l:"🛵 "+t("couriers")}];
+  let content="";
+  if(S.adminTab==="dashboard"){
+    const bars=[32,48,58,80,94,112,88,72,95,124,98,72];
+    const mx=Math.max(...bars);
+    content=`
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1rem;margin-bottom:1.5rem">
+        ${[["📦 "+(S.lang==="ru"?"Заказов":"Тапсырыс"),"142","+12%","var(--gold)"],["💰 "+(S.lang==="ru"?"Выручка":"Кіріс"),"284 300₸","+8%","var(--green)"],["🛵 "+(S.lang==="ru"?"Курьеров":"Курьер"),"23","active","var(--blue)"],["⭐ Рейтинг","4.8","/5","var(--gold)"]].map(([lb,v,c,col])=>`
+          <div class="card" style="padding:1.25rem">
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:${col}">${v}</div>
+            <div style="color:var(--text2);font-size:12px;margin-bottom:4px">${lb}</div>
+            <div style="font-size:11px;color:${c.startsWith("+")?"var(--green)":"var(--text3)"}">${c}</div>
+          </div>`).join("")}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="card" style="padding:1.25rem">
+          <h4 style="font-size:13px;font-weight:700;margin-bottom:1rem;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">📈 ${S.lang==="ru"?"Продажи по часам":"Сағаттық сатылым"}</h4>
+          <div style="display:flex;align-items:flex-end;gap:3px;height:80px">
+            ${bars.map((h,i)=>`<div style="flex:1;height:${Math.round((h/mx)*100)}%;background:${i===9?"linear-gradient(to top,var(--accent),var(--accent2))":"rgba(255,69,0,.2)"};border-radius:4px 4px 0 0;transition:height .3s"></div>`).join("")}
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:6px"><span>9:00</span><span>12</span><span>15</span><span>18</span><span>21</span></div>
+        </div>
+        <div class="card" style="padding:1.25rem">
+          <h4 style="font-size:13px;font-weight:700;margin-bottom:1rem;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">🏆 Топ</h4>
+          ${RESTS.slice(0,4).map((r,i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span>${["🥇","🥈","🥉","4️⃣"][i]}</span>
+            <span style="flex:1;font-size:13px">${r.name}</span>
+            <div style="width:50px;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden"><div style="height:100%;width:${100-i*22}%;background:linear-gradient(to right,var(--accent),var(--accent2));border-radius:2px"></div></div>
+          </div>`).join("")}
+        </div>
+      </div>`;
+  } else if(S.adminTab==="orders"){
+    const rows=[["FF-2501","Алибек С.","Burger Palace","5 870₸","🟢 "+t("delivered"),"14:32"],["FF-2502","Динара М.","Sushi Master","12 450₸","🟡 "+(S.lang==="ru"?"В пути":"Жолда"),"14:18"],["FF-2503","Арман Б.","Pizza Roma","7 980₸","🔵 "+(S.lang==="ru"?"Готовится":"Дайындалуда"),"14:05"],["FF-2504","Айгуль Н.","Shawarma King","3 200₸","🟢 "+t("delivered"),"13:50"]];
+    content=`<div style="overflow-x:auto"><table class="atable"><thead><tr>${["ID","Клиент","Ресторан","Сомасы","Мәртебе","Уақыт"].map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td style="color:${i===0?"var(--accent)":i===3?"var(--gold)":"var(--text)"}">${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  } else if(S.adminTab==="rests"){
+    content=`<div style="display:grid;gap:10px">${RESTS.map(r=>`<div class="card" style="padding:1.25rem;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:12px"><img src="${r.img}" style="width:48px;height:48px;object-fit:cover;border-radius:12px" loading="lazy"/><div><div style="font-weight:700">${r.name}</div><div style="color:var(--text2);font-size:13px">${r.cat} · ★ ${r.rating}</div></div></div>
+      <div style="display:flex;gap:8px"><button class="btn btn-ghost btn-xs" onclick="toast('✏️...')">✏️</button><button class="btn btn-danger btn-xs" onclick="toast('🗑️')">🗑</button></div>
+    </div>`).join("")}<button class="btn btn-fire" style="width:100%;padding:14px">+ ${S.lang==="ru"?"Добавить ресторан":"Мейрамхана қосу"}</button></div>`;
+  } else {
+    content=[{n:"Асан К.",r:4.9,d:347,s:"🟢 Active",e:"14 500₸"},{n:"Болат Р.",r:4.7,d:213,s:"🟡 "+( S.lang==="ru"?"В пути":"Жолда"),e:"8 200₸"},{n:"Нурлан С.",r:4.8,d:189,s:"🔴 "+t("offline"),e:"0₸"}].map(c=>`<div class="card" style="padding:1.25rem;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;align-items:center;gap:12px"><div style="width:46px;height:46px;border-radius:50%;background:rgba(255,69,0,.1);border:2px solid rgba(255,69,0,.2);display:flex;align-items:center;justify-content:center;font-size:22px">🛵</div><div><div style="font-weight:700">${c.n}</div><div style="color:var(--text2);font-size:13px">★ ${c.r} · ${c.d} ${S.lang==="ru"?"дост.":"жетк."}</div></div></div>
+      <div style="text-align:right"><div style="font-size:13px;margin-bottom:4px">${c.s}</div><div style="font-family:'Syne',sans-serif;font-weight:800;color:var(--gold)">${c.e}</div></div>
+    </div>`).join("");
+  }
+
+  return `<div style="min-height:100vh;background:var(--bg)">
+    <nav style="position:sticky;top:0;z-index:200;background:rgba(7,7,15,.97);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)">
+      <div class="container-wide"><div style="height:62px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="btn btn-ghost btn-sm" onclick="go('home')">← ${S.lang==="ru"?"Сайт":"Сайт"}</button>
+          <span style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800">⚙️ Admin</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-ghost btn-sm" onclick="toggleLang()">🌐</button>
+          <span class="badge badge-green">v2.0</span>
+          <button class="btn btn-danger btn-sm" onclick="doLogout()">🚪 ${t("logout")}</button>
+        </div>
+      </div></div>
+    </nav>
+    <div class="container-wide" style="padding:1.5rem 1.5rem 3rem">
+      <div class="tab-row" style="margin-bottom:1.5rem">${tabs.map(tb=>`<button class="tab-btn ${S.adminTab===tb.id?"act":""}" onclick="S.adminTab='${tb.id}';R()">${tb.l}</button>`).join("")}</div>
+      ${content}
+    </div>
+  </div>`;
+}
+
+function doLogout(){S.adminIn=false;LSS("adm",false);go("home");toast("👋 "+( S.lang==="ru"?"Вышли из системы":"Жүйеден шықтыңыз"));}
+
+// ===== EVENTS =====
+function attachEv(){
+  const ap=document.getElementById("ap");
+  if(ap) ap.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
+  window.fmtCard=function(inp){
+    let v=inp.value.replace(/\D/g,"").substring(0,16);
+    inp.value=v.replace(/(.{4})/g,"$1 ").trim();
+    const d=document.getElementById("cn-disp");
+    if(d){const p=(v+"").padEnd(16,"•");d.textContent=p.replace(/(.{4})/g,"$1 ").trim();}
+  };
+  window.fmtExp=function(inp){
+    let v=inp.value.replace(/\D/g,"");
+    if(v.length>=2)v=v.substring(0,2)+"/"+v.substring(2,4);
+    inp.value=v;
+    const d=document.getElementById("cexp-disp");
+    if(d)d.textContent=v||"MM/YY";
+  };
+  // Map loop
+  if(document.getElementById("map-cv")||document.getElementById("cou-map")){
+    (function loop(){
+      const mc=document.getElementById("map-cv");
+      const cc=document.getElementById("cou-map");
+      if(mc||cc){
+        if(mc)drawMap(mc,STATUSES_RU[S.trackStep]?.key||"placed");
+        if(cc)drawMap(cc,["placed","prep","pickup","done"][S.couStep]||"placed");
+        requestAnimationFrame(loop);
+      }
+    })();
+  }
+}
+
+// Expose globals
+window.go=go; window.toggleLang=toggleLang; window.goadmin=goadmin;
+window.setCat=setCat; window.addItem=addItem; window.addItemById=addItemById;
+window.updQty=updQty; window.applyPromo=applyPromo; window.doSimPay=doSimPay;
+window.completeOrder=completeOrder; window.doLogin=doLogin; window.doLogout=doLogout;
+window.toast=toast; window.LSS=LSS; window.S=S;
+
+R();
+</script>
+</body>
+</html>
